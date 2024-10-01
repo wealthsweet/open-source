@@ -1,7 +1,7 @@
 {
   "name": "@wealthsweet/embed-react",
   "repository": "https://github.com/morpheuswealth/wealthsweet",
-  "version": "1.0.0-canary.3",
+  "version": "1.0.0-canary.4",
   "type": "module",
   "files": [
     "dist/**"
