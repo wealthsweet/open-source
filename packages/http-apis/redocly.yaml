@@ -1,0 +1,5 @@
+apis:
+  performance@v1:
+    root: ./dist/swagger/performance.yaml
+    x-openapi-ts:
+      output: ./dist/api/performance.ts

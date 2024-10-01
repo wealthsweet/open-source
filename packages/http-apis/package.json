@@ -1,0 +1,42 @@
+{
+  "name": "@wealthsweet/http-apis",
+  "version": "0.0.0",
+  "type": "module",
+  "devDependencies": {
+    "@types/node": "^22.4.1",
+    "openapi-fetch": "^0.9.7",
+    "openapi-typescript": "7.0.0-next.11",
+    "openapi3-ts": "^4.3.3",
+    "tsup": "^8.2.4",
+    "tsx": "^4.17.0",
+    "yaml": "^2.5.0",
+    "zod": "^3.23.8",
+    "zod-openapi": "^2.19.0"
+  },
+  "exports": {
+    "./performance/zod": {
+      "types": "./dist/performance/zod.d.ts",
+      "module": "./dist/performance/zod.js"
+    },
+    "./performance/api": {
+      "types": "./dist/performance/api.d.ts",
+      "module": "./dist/performance/api.js"
+    }
+  },
+  "scripts": {
+    "build": "pnpm gen:swagger && pnpm gen:api && tsup",
+    "clean": "rm -r dist || true",
+    "clean:full": "rm -r dist node_modules .turbo || true",
+    "gen:api": "pnpm openapi-typescript",
+    "gen:swagger": "tsx ./src/generate-swagger-files",
+    "lint": "eslint"
+  },
+  "sideEffects": false,
+  "typesVersions": {
+    "*": {
+      "*": [
+        "dist/*"
+      ]
+    }
+  }
+}

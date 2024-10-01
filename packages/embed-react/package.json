@@ -1,0 +1,29 @@
+{
+  "name": "@wealthsweet/embed-react",
+  "repository": "https://github.com/morpheuswealth/wealthsweet",
+  "version": "1.0.0-canary.3",
+  "type": "module",
+  "files": [
+    "dist/**"
+  ],
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "clean": "rm -r dist coverage .tsup || true",
+    "clean:full": "rm -r dist coverage node_modules .turbo .tsup || true",
+    "build": "tsup",
+    "lint": "eslint . && prettier -c src/",
+    "test": "vitest --run",
+    "test:coverage": "vitest  --run --coverage.enabled"
+  },
+  "devDependencies": {
+    "@types/react": "*",
+    "@wealthsweet/http-apis": "workspace:*",
+    "tsup": "^8.2.4",
+    "typescript": "5.5.4"
+  },
+  "peerDependencies": {
+    "react": ">=18 || >=19.0.0-beta"
+  }
+}

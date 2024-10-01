@@ -1,0 +1,29 @@
+{
+  "name": "wealthsweet",
+  "devDependencies": {
+    "prettier": "^3.3.3",
+    "prettier-plugin-organize-imports": "^4.0.0",
+    "prettier-plugin-tailwindcss": "^0.6.6",
+    "syncpack": "^12.4.0",
+    "turbo": "^2.1.1",
+    "turbo-ignore": "^2.0.14"
+  },
+  "packageManager": "pnpm@9.3.0+sha256.e1f9e8d1a16607a46dd3c158b5f7a7dc7945501d1c6222d454d63d033d1d918f",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "turbo build",
+    "clean": "turbo clean && rm -r .turbo pnpm-lock.yaml || true",
+    "clean:full": "turbo clean:full && rm -r .turbo node_modules pnpm-lock.yaml || true",
+    "deps": "syncpack list",
+    "deps:fix": "syncpack fix-mismatches",
+    "deps:format": "syncpack format",
+    "deps:list": "syncpack list-mismatches",
+    "deps:update": "syncpack update",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "lint": "turbo lint",
+    "typecheck": "turbo typecheck"
+  }
+}
