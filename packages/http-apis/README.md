@@ -1,17 +1,15 @@
 # `@wealthsweet/api-schemas`
 
-This is a library of external apis for the WealthSweet product.
+This is a library of external APIs for the WealthSweet product.
 
 This library creates:
 
 - A swagger definition of the external API
-- Typescript types of the external API
+- TypeScript types of the external API
 - Zod Validation Schemas of the external API
 
-To generate these components run
+To generate these files to the `dist` directory, run the following command:
 
 ```
 pnpm build
 ```
-
-which will create these files in the `dist` directory
