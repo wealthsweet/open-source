@@ -21,7 +21,7 @@
     "@types/react": "*",
     "@wealthsweet/http-apis": "workspace:*",
     "tsup": "^8.2.4",
-    "typescript": "5.5.4"
+    "typescript": "5.6.2"
   },
   "peerDependencies": {
     "react": ">=18 || >=19.0.0-beta"
