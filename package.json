@@ -4,7 +4,7 @@
     "prettier": "^3.3.3",
     "prettier-plugin-organize-imports": "^4.0.0",
     "prettier-plugin-tailwindcss": "^0.6.6",
-    "syncpack": "^12.4.0",
+    "syncpack": "^13.0.0",
     "turbo": "^2.1.1",
     "turbo-ignore": "^2.0.14"
   },
