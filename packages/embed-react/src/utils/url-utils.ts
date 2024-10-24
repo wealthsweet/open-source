@@ -21,14 +21,14 @@ export function serialiseURLSearchParams<
 >(params: TParams) {
   const validParams: [string, string][] = [];
   for (const [key, value] of Object.entries(params)) {
-    // If the value is '' , undefined or null then remove it from the params.
-    if (value === "" || value === undefined || value == null) {
+    // If the value is undefined then remove it from the params.
+    if (value === undefined) {
       continue;
     }
     if (Array.isArray(value)) {
       validParams.push([key, value.join(",")]);
     } else {
-      validParams.push([key, value]);
+      validParams.push([key, value ?? ""]);
     }
   }
   return new URLSearchParams(Object.fromEntries(validParams));
