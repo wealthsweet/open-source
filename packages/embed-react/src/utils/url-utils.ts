@@ -17,16 +17,19 @@ export function buildSrcProperty({
 }
 
 export function serialiseURLSearchParams<
-  TParams extends Record<string, string | string[]>,
+  TParams extends Record<string, string | string[] | null | undefined>,
 >(params: TParams) {
-  const urlParams = Object.entries(params)
-    .map(([key, value]) => {
-      if (Array.isArray(value)) {
-        return [key, value.join(",")];
-      } else {
-        return [key, value];
-      }
-    })
-    .filter(([_, value]) => value !== undefined);
-  return new URLSearchParams(urlParams);
+  const validParams: [string, string][] = [];
+  for (const [key, value] of Object.entries(params)) {
+    // If the value is '' , undefined or null then remove it from the params.
+    if (value === "" || value === undefined || value == null) {
+      continue;
+    }
+    if (Array.isArray(value)) {
+      validParams.push([key, value.join(",")]);
+    } else {
+      validParams.push([key, value]);
+    }
+  }
+  return new URLSearchParams(Object.fromEntries(validParams));
 }
