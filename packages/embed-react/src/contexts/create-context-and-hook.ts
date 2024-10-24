@@ -3,11 +3,11 @@
  * https://github.com/clerk/javascript/blob/main/packages/shared/src/react/hooks/createContextAndHook.ts
  */
 
-import React from "react";
+import { createContext, useContext, type Context } from "react";
 
 export function assertContextExists<T>(
   contextVal: unknown,
-  msgOrCtx: string | React.Context<T>,
+  msgOrCtx: string | Context<T>,
 ): asserts contextVal {
   if (!contextVal) {
     throw typeof msgOrCtx === "string"
@@ -17,7 +17,7 @@ export function assertContextExists<T>(
 }
 
 type Options = { assertCtxFn?: (v: unknown, msg: string) => void };
-type ContextOf<T> = React.Context<{ value: T } | undefined>;
+type ContextOf<T> = Context<{ value: T } | undefined>;
 type UseCtxFn<T> = () => T;
 
 /**
@@ -38,17 +38,17 @@ export const createContextAndHook = <CtxVal>(
   >,
 ] => {
   const { assertCtxFn = assertContextExists } = options || {};
-  const Ctx = React.createContext<{ value: CtxVal } | undefined>(undefined);
+  const Ctx = createContext<{ value: CtxVal } | undefined>(undefined);
   Ctx.displayName = displayName;
 
   const useCtx = () => {
-    const ctx = React.useContext(Ctx);
+    const ctx = useContext(Ctx);
     assertCtxFn(ctx, `${displayName} not found`);
     return { ...(ctx?.value as CtxVal), contextLoaded: true as const };
   };
 
   const useCtxWithoutGuarantee = () => {
-    const ctx = React.useContext(Ctx);
+    const ctx = useContext(Ctx);
     return ctx === undefined
       ? ({ contextLoaded: false } as Partial<CtxVal> & {
           contextLoaded: boolean;

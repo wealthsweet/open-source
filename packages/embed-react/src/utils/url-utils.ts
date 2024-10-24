@@ -27,6 +27,6 @@ export function serialiseURLSearchParams<
         return [key, value];
       }
     })
-    .filter(([_, value]) => value === undefined);
+    .filter(([_, value]) => value !== undefined);
   return new URLSearchParams(urlParams);
 }
