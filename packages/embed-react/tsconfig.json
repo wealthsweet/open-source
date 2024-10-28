@@ -27,7 +27,8 @@
     "paths": {
       "@wealthsweet/http-apis/performance/api": [
         "../http-apis/dist/performance/api"
-      ]
+      ],
+      "@wealthsweet/embed-message-api": ["../embed-message-api/dist/index"]
     },
     "outDir": "dist",
     "declaration": true
