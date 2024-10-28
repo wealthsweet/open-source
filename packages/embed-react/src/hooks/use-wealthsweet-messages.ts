@@ -53,10 +53,8 @@ export function useWealthsweetMessages({
   );
 
   useEffect(() => {
-    console.log("adding event listener");
     window.addEventListener("message", handleMessage);
     return () => {
-      console.log("removing event listener");
       window.removeEventListener("message", handleMessage);
     };
   }, [handleMessage]);
