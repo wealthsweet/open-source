@@ -1,4 +1,4 @@
-# `@wealthsweet/api-schemas`
+# `@wealthsweet/http-apis`
 
 This is a library of external APIs for the WealthSweet product.
 

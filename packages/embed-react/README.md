@@ -114,3 +114,58 @@ function getPerformanceUrl(params: PerformancePageElement["params"]) {
 ```
 
 The `origin` configuration is the same as when using the React Hook and the parameters must include a token for the URL to authenticate with.
+
+## Listening to messages
+
+Once the WealthSweet UI is loaded into your iframe the WealthSweet UI will begin posting messages to its parent window via the browser [postMessage](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage) api.
+
+Internally this is done with code similar to
+
+```
+window.parent.postMessage(message, "*");
+```
+
+> [!IMPORTANT]
+> WealthSweet posts messages to the **immediate parent** of the window in which it is loaded. So listening to those messages has to be done by the immediate parent.
+> Mutliple levels of `iframe` nesting is will not propogate messages to grandparents and older relatives.
+
+> [!NOTE]
+> Since WealthSweet does not know the domain that the parent window is hosted on we post this message to _any_ domain (`*`).
+> The messages that WealthSweet posts are purely lifecycle messages of the WealthSweet application and will **NEVER** contain user information.
+> The WealthSweet SDK requires that a `origin` be supplied to read from the `postMessage` api, this is so that the SDK can check that the message originates from the expected `origin` of the WealthSweet UI (via the `event.origin` field).
+> All messages not from this `origin` will be ignored.
+
+### Hook: useWealthSweetMessages
+
+The `useWealthSweetMessages` hook is a way to supply typesafe callbacks that will be called when the SDK receives an `EmbedMessage` from the `postMessage` api.
+
+`useWealthSweetMessages` Params
+| Parameter | Description |
+| -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `origin` | The origin server you expect messages to be coming from (AKA the same server the iframe is loaded from). <br> Specifies a host and a protocol to distinguish between our staging / production instance of the application. <br><ul><li>protocol: Defaults to https and should not need to be configured</li><li>host: Set to staging.performance.wealthsweet.com for testing purposes and performance.wealthsweet.com in production</li></ul> |
+| `onMessage` | A callback that will be called when any `EmbedMessage` message is received |
+| `onError` | A callback that will be called when an `EmbedMessageError` message is received |
+| `onInitialising` | A callback that will be called when an `EmbedMessageInitialising` message is received |
+| `onInitialisingDone` | "A callback that will be called when an `EmbedMessageInitialisingDone` message is received |
+| `onRendering` | A callback that will be called when an `EmbedMessageRendering` message is received |
+| `onRenderingDone` | A callback that will be called when an `EmbedMessageRenderingDone` message is received |
+| `onUserEvent` | A callback that will be called when an `EmbedMessageUserEvent` message is received. <br> The following events on the `iframe` are listened to and if any are triggered then we fire this message; <br> <ul><li>`mousemove`</li><li>`keydown`</li><li>`wheel`</li><li>`DOMMouseScroll`</li><li>`mousewheel`</li><li>`mousedown`</li><li>`touchstart`</li><li>`touchmove`</li><li>`MSPointerDown`</li><li>`MSPointerMove`</li><li>`visibilitychange`</li></ul> <br> User events are throttled to one message per second |
+| `onUserIdle` | A callback that will be called when an `EmbedMessageUserIdle` message is received. <br> An `onUserIdle` message is sent if the user has not been active for one second and contains the last time that the user was active. |
+
+### Hook: useIdleStatus
+
+The `useIdleStatus` hook is a wrapper around the `useWealthSweetMessages` hook and listens to `onUserEvent` and `onUserIdle` messages.
+
+`useWealthSweetMessages` Parameters
+| Parameter | Description |
+| --- | --- |
+| `origin`: object | The origin server you expect messages to be coming from (AKA the same server the iframe is loaded from). <br> Specifies a host and a protocol to distinguish between our staging / production instance of the application. <br> <ul> <li>protocol: Defaults to https and should not need to be configured</li><li>host: Set to staging.performance.wealthsweet.com for testing purposes and performance.wealthsweet.com in production</li></ul> |
+| `timeout`: number | A timeout in `ms` for for how long to wait untill this hook reports a status of `isIidle = true`. <br> The default for `timeout` is 10 minutes |
+| `onIdle`: () => void | A callback that will be called after a user has been idle for `timeout` ms. |
+| `onAction`: () => void | A callback to forward to the onUserEvent callback function. This will be called for every user event. |
+
+`useWealthSweetMessages` Returns
+| Parameter | Description |
+| --- | ---|
+| `lastActiveTime`: number | The last time that the user was active as a Unix Timestamp in `ms` |
+| `isIdle`: boolean | Whether the user is currently idle |
