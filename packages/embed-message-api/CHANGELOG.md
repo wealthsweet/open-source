@@ -1,5 +1,11 @@
 # @wealthsweet/embed-message-api
 
+## 0.0.2
+
+### Patch Changes
+
+- Update access to public
+
 ## 0.0.1
 
 ### Patch Changes

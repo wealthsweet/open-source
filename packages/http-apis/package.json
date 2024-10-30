@@ -1,6 +1,6 @@
 {
   "name": "@wealthsweet/http-apis",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "devDependencies": {
     "@types/node": "^22.4.1",
     "openapi-fetch": "^0.9.7",
@@ -26,7 +26,6 @@
     "dist/**"
   ],
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com",
     "access": "public"
   },
   "repository": "https://github.com/wealthsweet/open-source",

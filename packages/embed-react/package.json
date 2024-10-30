@@ -1,6 +1,6 @@
 {
   "name": "@wealthsweet/embed-react",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "devDependencies": {
     "@types/react": "*",
     "@wealthsweet/embed-message-api": "workspace:*",
@@ -17,7 +17,6 @@
     "react": ">=18 || >=19.0.0-beta"
   },
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com",
     "access": "public"
   },
   "repository": "https://github.com/wealthsweet/open-source",
