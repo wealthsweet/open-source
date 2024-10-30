@@ -1,6 +1,6 @@
 {
   "name": "@wealthsweet/embed-message-api",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "private": true,
   "devDependencies": {
     "tsup": "^8.3.0",
