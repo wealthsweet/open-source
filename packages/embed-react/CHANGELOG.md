@@ -1,5 +1,11 @@
 # @wealthsweet/embed-react
 
+## 0.0.5
+
+### Patch Changes
+
+- 41bb6a8: Test github action runner
+
 ## 0.0.4
 
 ### Patch Changes
