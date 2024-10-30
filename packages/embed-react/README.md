@@ -13,7 +13,7 @@ npm install @wealthsweet/embed-react
 
 There are many possible approaches to embedding WealthSweet in your application. Some approaches are simple, and are
 designed to work out of the box. Other approaches are more complex, but allow fine-grained control over the embedded
-Wealthsweet components.
+WealthSweet components.
 
 ### Approach 1: React Context
 
