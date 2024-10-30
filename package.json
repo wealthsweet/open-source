@@ -23,7 +23,8 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "lint": "turbo lint",
     "typecheck": "turbo typecheck",
-    "publish-packages": "turbo run build lint && changeset version && changeset publish"
+    "publish-packages": "turbo run build lint && changeset version && changeset publish",
+    "release-packages": "turbo run build lint && changeset publish"
   },
   "workspaces": [
     "apps/*",
