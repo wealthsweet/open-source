@@ -22,7 +22,8 @@
     "deps:update": "syncpack update",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "lint": "turbo lint",
-    "typecheck": "turbo typecheck"
+    "typecheck": "turbo typecheck",
+    "publish-packages": "turbo run build lint && changeset version && changeset publish"
   },
   "workspaces": [
     "apps/*",

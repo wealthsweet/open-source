@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
   "include": ["src/**/*", "tsup.config.ts"],
-  "exclude": ["dist", "node_modules", "eslint.config.ts", ".tsup"],
+  "exclude": ["dist", "node_modules", "eslint.config.js", ".tsup"],
   "compilerOptions": {
     "allowJs": true,
     "allowUnreachableCode": false,
