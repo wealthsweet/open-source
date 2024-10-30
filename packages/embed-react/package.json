@@ -1,30 +1,33 @@
 {
   "name": "@wealthsweet/embed-react",
-  "repository": "https://github.com/morpheuswealth/wealthsweet",
   "version": "0.0.1",
-  "type": "module",
+  "devDependencies": {
+    "@types/react": "*",
+    "@wealthsweet/embed-message-api": "workspace:*",
+    "@wealthsweet/http-apis": "workspace:*",
+    "tsup": "^8.2.4",
+    "typescript": "5.5.4"
+  },
   "files": [
     "dist/**"
   ],
   "main": "dist/index.cjs",
   "module": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "peerDependencies": {
+    "react": ">=18 || >=19.0.0-beta"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "repository": "https://github.com/wealthsweet/open-source",
   "scripts": {
+    "build": "tsup",
     "clean": "rm -r dist coverage .tsup || true",
     "clean:full": "rm -r dist coverage node_modules .turbo .tsup || true",
-    "build": "tsup",
     "lint": "eslint . && prettier -c src/",
     "test": "vitest --run",
     "test:coverage": "vitest  --run --coverage.enabled"
   },
-  "devDependencies": {
-    "@types/react": "*",
-    "@wealthsweet/http-apis": "workspace:*",
-    "@wealthsweet/embed-message-api": "workspace:*",
-    "tsup": "^8.2.4",
-    "typescript": "5.5.4"
-  },
-  "peerDependencies": {
-    "react": ">=18 || >=19.0.0-beta"
-  }
+  "type": "module",
+  "types": "dist/index.d.ts"
 }
