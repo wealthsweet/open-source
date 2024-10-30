@@ -1,6 +1,6 @@
 {
   "name": "@wealthsweet/http-apis",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "devDependencies": {
     "@types/node": "^22.4.1",
     "openapi-fetch": "^0.9.7",
