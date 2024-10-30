@@ -6,7 +6,7 @@
     "@wealthsweet/embed-message-api": "workspace:*",
     "@wealthsweet/http-apis": "workspace:*",
     "tsup": "^8.2.4",
-    "typescript": "5.5.4"
+    "typescript": "5.6.3"
   },
   "files": [
     "dist/**"
