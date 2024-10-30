@@ -132,7 +132,7 @@ window.parent.postMessage(message, "*");
 
 > [!IMPORTANT]
 > WealthSweet posts messages to the **immediate parent** of the window in which it is loaded. So listening to those messages has to be done by the immediate parent.
-> Multiple levels of `iframe` nesting is will not propagate messages to grandparents and older relatives.
+> Multiple levels of `iframe` nesting will not propagate messages to grandparents and older relatives.
 
 > [!NOTE]
 > Since WealthSweet does not know the domain that the parent window is hosted on we post this message to _any_ domain (`*`).
