@@ -1,5 +1,5 @@
 # `@wealthsweet/http-apis`
-Use Wealthsweet HTTP APIs in your JS/Typescript project.
+Use WealthSweet HTTP APIs in your JS/Typescript project.
 
 This package provides:
 
