@@ -17,7 +17,8 @@
     "react": ">=18 || >=19.0.0-beta"
   },
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
+    "registry": "https://npm.pkg.github.com",
+    "access": "public"
   },
   "repository": "https://github.com/wealthsweet/open-source",
   "scripts": {
