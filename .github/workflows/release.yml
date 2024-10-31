@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - upload-swagger
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
@@ -28,10 +29,18 @@ jobs:
         run: pnpm install
       - name: Create Release Pull Request or Publish to npm
         id: changesets
-        uses: changesets/action@v1
+        uses: patrickcorbett1/action@1.0.0
         with:
           # This expects you to have a script called release which does a build for your packages and calls changeset publish
           publish: pnpm release-packages
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Upload swagger to http-apis if released
+        uses: "actions/github-script@v7"
+        env:
+          PUBLISHED_PACKAGES: steps.changesets.outputs.publishedPackages
+        with:
+          script: |
+            const script = require('.github/workflows/upload-swagger.js')
+            await script({ github })

@@ -44,11 +44,11 @@ export const embedRequestParams = z.object({
     description: "The access token for this embedded context",
     example: "pk_test_TOKEN",
   }),
-  fromDate: z.string().date().optional().openapi({
+  from: z.string().date().optional().openapi({
     description: "The date to report performance calcs from",
     example: "2020-01-01",
   }),
-  toDate: z.string().date().optional().openapi({
+  to: z.string().date().optional().openapi({
     description: "The date to report performance calcs to",
     example: "2021-01-01",
   }),
