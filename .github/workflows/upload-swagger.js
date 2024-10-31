@@ -5,6 +5,10 @@ module.exports = async ({ github }, publishedPackages) => {
     ({ name }) => name == "@wealthsweet/http-apis",
   ).uploadUrl;
   console.log("uploadUrl: ", uploadUrl);
+  if (!uploadUrl) {
+    console.log("http-apis not released so ther is no work to do");
+    return;
+  }
   const regex =
     /https:\/\/uploads\.github\.com\/repos\/([^/]+)\/([^/]+)\/releases\/(\d+)\/assets(?:\?name=([^&]+))?(?:&label=([^&]+))?/;
   const match = regex.exec(uploadUrl);

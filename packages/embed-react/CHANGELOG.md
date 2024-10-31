@@ -1,5 +1,11 @@
 # @wealthsweet/embed-react
 
+## 0.0.0-20241031060252
+
+### Patch Changes
+
+- Test upload swagger workflow
+
 ## 0.0.0-20241031053357
 
 ### Major Changes
