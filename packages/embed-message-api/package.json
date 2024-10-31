@@ -1,6 +1,6 @@
 {
   "name": "@wealthsweet/embed-message-api",
-  "version": "0.0.5",
+  "version": "0.0.0-20241031053357",
   "dependencies": {
     "zod": "^3.23.8"
   },

@@ -1,5 +1,11 @@
 # @wealthsweet/embed-react
 
+## 0.0.0-20241031053357
+
+### Major Changes
+
+- 46eb79e: Initial release
+
 ## 0.0.5
 
 ### Patch Changes
