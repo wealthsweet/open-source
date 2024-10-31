@@ -27,9 +27,9 @@ jobs:
           cache: "pnpm"
       - name: Install dependencies
         run: pnpm install
-      - name: Create Release Pull Request or Publish to npm
+      - name: patrickcorbett1-Changesets
         id: changesets
-        uses: patrickcorbett1/action@1.0.0
+        uses: patrickcorbett1/action@1.0.1
         with:
           # This expects you to have a script called release which does a build for your packages and calls changeset publish
           publish: pnpm release-packages
