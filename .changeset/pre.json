@@ -1,0 +1,12 @@
+{
+  "mode": "pre",
+  "tag": "canary",
+  "initialVersions": {
+    "@wealthsweet/embed-message-api": "0.0.5",
+    "@wealthsweet/embed-react": "0.0.5",
+    "@wealthsweet/http-apis": "0.0.5"
+  },
+  "changesets": [
+    "metal-rules-occur"
+  ]
+}

@@ -1,5 +1,11 @@
 # @wealthsweet/embed-message-api
 
+## 0.0.6-canary.0
+
+### Patch Changes
+
+- Enter prerelease mode
+
 ## 0.0.5
 
 ### Patch Changes
