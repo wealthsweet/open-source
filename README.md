@@ -1,12 +1,12 @@
 <h1 align="center">Wealthsweet</h1>
-This is the WealthSweet open-source mono-repo of our external API's and SDK's
+The WealthSweet open-source repo contains documentation, tools, and SDKs to help you integrate with WealthSweet services. 
 
 ## Open Source SDK's
 
-- `@wealthsweet/embed-react` [Docs](https://github.com/wealthsweet/open-source/blob/main/packages/embed-react/README.md)
+- Embed WealthSweet components into your React application: `@wealthsweet/embed-react` [Docs](https://github.com/wealthsweet/open-source/blob/main/packages/embed-react/README.md)
 
 ## Open Source API's
 
-- `@wealthsweet/http-apis` [Docs](https://github.com/wealthsweet/open-source/blob/main/packages/http-apis/README.md)
+- Use Wealthsweet HTTP APIs in your JS/Typescript project: `@wealthsweet/http-apis` [Docs](https://github.com/wealthsweet/open-source/blob/main/packages/http-apis/README.md)
 
-- `@wealthsweet/embed-message-api` [Docs](https://github.com/wealthsweet/open-source/blob/main/packages/embed-message-api/README.md)
+- Communicate with embedded WealthSweet components: `@wealthsweet/embed-message-api` [Docs](https://github.com/wealthsweet/open-source/blob/main/packages/embed-message-api/README.md)
