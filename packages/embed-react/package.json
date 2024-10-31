@@ -1,6 +1,6 @@
 {
   "name": "@wealthsweet/embed-react",
-  "version": "0.0.0-20241031060252",
+  "version": "0.0.0",
   "devDependencies": {
     "@types/react": "*",
     "@wealthsweet/embed-message-api": "workspace:*",

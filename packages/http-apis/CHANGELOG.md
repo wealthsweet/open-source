@@ -1,5 +1,11 @@
 # @wealthsweet/http-apis
 
+## 0.0.0
+
+### Patch Changes
+
+- 65c67d9: Test swagger upload on release
+
 ## 0.0.0-20241031060252
 
 ### Patch Changes
