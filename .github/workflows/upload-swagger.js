@@ -1,7 +1,7 @@
 module.exports = async ({ github }, publishedPackages) => {
   console.log("publishedPackages: ", publishedPackages);
-  const publishedPackages = JSON.parse(publishedPackages);
-  const uploadUrl = publishedPackages.find(
+  const packages = JSON.parse(publishedPackages);
+  const uploadUrl = packages.find(
     ({ name }) => name == "@wealthsweet/http-apis",
   ).uploadUrl;
   console.log("uploadUrl: ", uploadUrl);
