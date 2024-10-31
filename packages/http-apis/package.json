@@ -1,6 +1,6 @@
 {
   "name": "@wealthsweet/http-apis",
-  "version": "0.0.6-canary.0",
+  "version": "0.0.6",
   "devDependencies": {
     "@types/node": "^22.4.1",
     "eslint": "^9.13.0",
