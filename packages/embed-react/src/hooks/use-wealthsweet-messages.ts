@@ -1,17 +1,19 @@
 import { useEffect, useMemo } from "react";
+import { useWealthSweetContextWithoutGuarantee } from "src/contexts/wealthsweet-provider";
 import type { WealthSweetElementOrigin } from "src/lib";
 import {
   buildHandleMessage,
   combineCallbacks,
   type MessagingCallbacks,
 } from "src/utils/messaging-callback-utils";
+import { buildContextParamsNotFoundError } from "./utils";
 
 export type UseWealthsweetMessagesProps = {
-  origin: WealthSweetElementOrigin;
+  origin?: WealthSweetElementOrigin;
 } & Partial<MessagingCallbacks>;
 
 export function useWealthsweetMessages({
-  origin,
+  origin: paramOrigin,
   onMessage,
   onError,
   onInitialising,
@@ -21,10 +23,22 @@ export function useWealthsweetMessages({
   onUserEvent,
   onUserIdle,
 }: UseWealthsweetMessagesProps) {
+  const { origin: contextOrigin, contextLoaded } =
+    useWealthSweetContextWithoutGuarantee();
+  if (!contextLoaded && !contextOrigin) {
+    throw buildContextParamsNotFoundError("useWealthsweetMessages", ["origin"]);
+  }
+  const returnOrigin = contextLoaded ? contextOrigin : paramOrigin;
+  if (returnOrigin === undefined) {
+    return {
+      isListeningToMessages: false as const,
+    };
+  }
+
   const handleMessage = useMemo(
     () =>
       buildHandleMessage(
-        origin,
+        returnOrigin,
         combineCallbacks(
           {
             onMessage,
@@ -58,4 +72,8 @@ export function useWealthsweetMessages({
       window.removeEventListener("message", handleMessage);
     };
   }, [handleMessage]);
+
+  return {
+    isListeningToMessages: true as const,
+  };
 }
