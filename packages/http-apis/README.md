@@ -1,15 +1,15 @@
 # `@wealthsweet/http-apis`
+Use WealthSweet HTTP APIs in your JS/Typescript project.
 
-This is a library of external APIs for the WealthSweet product.
+This package provides:
 
-This library creates:
+- A swagger definition of the WealthSweet public API
+- TypeScript types of the WealthSweet public API
+- [Zod](https://zod.dev/) Schemas of the WealthSweet public API
 
-- A swagger definition of the external API
-- TypeScript types of the external API
-- Zod Validation Schemas of the external API
+## Installation
+Simply install with the package manager of your choice.
 
-To generate these files to the `dist` directory, run the following command:
-
-```
-pnpm build
+```bash
+npm install @wealthsweet/embed-message-api
 ```

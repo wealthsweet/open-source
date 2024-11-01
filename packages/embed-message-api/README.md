@@ -1,14 +1,16 @@
 # `@wealthsweet/embed-message-api`
 
-This is a library of the message schemas that WealthSweet embedded packages use for messages sent through the `postMessage` browser api.
+Communicate with embedded WealthSweet components.
 
-This library creates:
+WealthSweet embedded components can communicate with their parent page via messages sent through the `postMessage` browser api.
+This library provides:
 
-- TypeScript types of the messages being sent via the `postMessage` api
-- A Zod Validation Schema of the Embedded message that will validate the message satisfies one of the wealthsweet message types
+- TypeScript types of WealthSweet embedded messages
+- [Zod](https://zod.dev/) Schemas that can be used to validate WealthSweet embedded messages
 
-To generate these files to the `dist` directory, run the following command:
+## Installation
+Simply install with the package manager of your choice.
 
-```
-pnpm build
+```bash
+npm install @wealthsweet/embed-message-api
 ```

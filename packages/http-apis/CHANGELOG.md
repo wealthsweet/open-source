@@ -1,5 +1,11 @@
 # @wealthsweet/http-apis
 
+## 1.0.0
+
+### Major Changes
+
+- 46eb79e: Initial release
+
 ## 0.0.5
 
 ### Patch Changes
