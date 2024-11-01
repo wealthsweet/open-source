@@ -1,13 +1,15 @@
 import { useMemo, useState } from "react";
+import { useWealthSweetContextWithoutGuarantee } from "src/contexts/wealthsweet-provider";
 import type { WealthSweetElementOrigin } from "src/lib";
 import {
   maybeCall,
   type MessagingCallbacks,
 } from "src/utils/messaging-callback-utils";
 import { useWealthsweetMessages } from "./use-wealthsweet-messages";
+import { buildContextParamsNotFoundError } from "./utils";
 
 export type UseWealthsweetIdleStatusProps = {
-  origin: WealthSweetElementOrigin;
+  origin?: WealthSweetElementOrigin;
   timeout?: number;
   onIdle?: () => void;
   onAction?: () => void;
@@ -17,7 +19,7 @@ export type UseWealthsweetIdleStatusProps = {
 const TEN_MINUTES_MILLIS = 1000 * 60 * 10;
 
 export function useWealthsweetIdleStatus({
-  origin,
+  origin: paramOrigin,
   timeout = TEN_MINUTES_MILLIS,
   onIdle,
   onAction,
@@ -50,7 +52,17 @@ export function useWealthsweetIdleStatus({
     [setLastActiveTime, setIsIdle, onUserIdle, onUserEvent, timeout],
   );
 
-  useWealthsweetMessages({
+  // Even though the message hook handles this it is nicer to refer to the IdleStatus hook if that is the only hook the user sees
+  const { origin: contextOrigin, contextLoaded } =
+    useWealthSweetContextWithoutGuarantee();
+  if (!contextLoaded && !contextOrigin) {
+    throw buildContextParamsNotFoundError("useWealthsweetIdleStatus", [
+      "origin",
+    ]);
+  }
+  const origin = contextLoaded ? contextOrigin : paramOrigin;
+
+  const { isListeningToMessages } = useWealthsweetMessages({
     origin,
     ...internalCallbacks,
   });
@@ -58,5 +70,6 @@ export function useWealthsweetIdleStatus({
   return {
     isIdle,
     lastActiveTime,
+    isListeningToMessages,
   };
 }
