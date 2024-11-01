@@ -35,3 +35,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Upload swagger to http-apis if released
+        if: steps.changesets.outputs.published == 'true'
+        uses: "actions/github-script@v7"
+        with:
+          script: |
+            const script = require('.github/workflows/upload-swagger.js')
+            const fs = require('node:fs')
+            await script({ github }, ${{steps.changesets.outputs.publishedPackages}}, fs)
