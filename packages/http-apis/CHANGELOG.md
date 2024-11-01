@@ -1,5 +1,11 @@
 # @wealthsweet/http-apis
 
+## 1.0.1
+
+### Patch Changes
+
+- 2ecff90: Fix incorrect query pararmeter names in swagger file
+
 ## 1.0.0
 
 ### Major Changes
