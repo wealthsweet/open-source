@@ -1,12 +1,15 @@
 import { useMemo, useState } from "react";
-import { useWealthSweetContextWithoutGuarantee } from "src/contexts/wealthsweet-provider";
+import { useWealthSweetContextWithoutGuarantee } from "src/contexts/wealthsweet-context";
 import type { WealthSweetElementOrigin } from "src/lib";
 import {
   maybeCall,
   type MessagingCallbacks,
 } from "src/utils/messaging-callback-utils";
 import { useWealthsweetMessages } from "./use-wealthsweet-messages";
-import { buildContextParamsNotFoundError } from "./utils";
+import {
+  buildContextParamsNotFoundError,
+  chooseHookParamElseContextParam,
+} from "./utils";
 
 export type UseWealthsweetIdleStatusProps = {
   origin?: WealthSweetElementOrigin;
@@ -53,14 +56,14 @@ export function useWealthsweetIdleStatus({
   );
 
   // Even though the message hook handles this it is nicer to refer to the IdleStatus hook if that is the only hook the user sees
-  const { origin: contextOrigin, contextLoaded } =
+  const [wealthsweetContextLoaded, wealthsweetContext] =
     useWealthSweetContextWithoutGuarantee();
-  if (!contextLoaded && !contextOrigin) {
-    throw buildContextParamsNotFoundError("useWealthsweetIdleStatus", [
-      "origin",
-    ]);
-  }
-  const origin = contextLoaded ? contextOrigin : paramOrigin;
+  const origin = chooseHookParamElseContextParam(
+    paramOrigin,
+    wealthsweetContext?.origin,
+    wealthsweetContextLoaded,
+    buildContextParamsNotFoundError("useWealthsweetIdleStatus", ["origin"]),
+  );
 
   const { isListeningToMessages } = useWealthsweetMessages({
     origin,

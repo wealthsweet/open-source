@@ -12,20 +12,23 @@ export type TokenError = {
   error: unknown;
 };
 
+export type TokenFetchState = "INITIALISED" | "FETCHING" | "FETCHED" | "ERROR";
+
 export const [TokenContext, useTokenContext, useTokenContextWithoutGuarantee] =
   createContextAndHook<
     | {
         _tag: "success";
-        token: Partial<WealthSweetToken>;
+        tokenFetchState: TokenFetchState;
+        token?: WealthSweetToken;
       }
-    | { _tag: "error"; error: TokenError }
+    | { _tag: "error"; tokenFetchState: TokenFetchState; error: TokenError }
   >("TokenContext");
 
 const ONE_MINUTE = 1000 * 60;
 
 export type TokenProviderProps = PropsWithChildren<{
   fetchToken: () => Promise<WealthSweetToken>;
-  onFetchTokenError: (error: TokenError) => void;
+  onFetchTokenError?: (error: TokenError) => void;
 }>;
 
 export function TokenProvider({
@@ -34,27 +37,34 @@ export function TokenProvider({
   onFetchTokenError,
 }: TokenProviderProps) {
   const [token, setToken] = useState<WealthSweetToken>();
+  const [tokenFetchState, setTokenFetchState] =
+    useState<TokenFetchState>("INITIALISED");
   const [error, setError] = useState<TokenError>();
 
   const handleTokenError = useCallback(
     (error: unknown) => {
       const tokenErrror = { message: "Failed to fetch token", error } as const;
       setError(tokenErrror);
-      onFetchTokenError(tokenErrror);
+      setTokenFetchState("ERROR");
+      if (onFetchTokenError) {
+        onFetchTokenError(tokenErrror);
+      }
     },
-    [setError, onFetchTokenError],
+    [setError, onFetchTokenError, setTokenFetchState],
   );
 
   const generateToken = useCallback(async () => {
+    setTokenFetchState("FETCHING");
     const token = await fetchToken();
     setToken(token);
+    setTokenFetchState("FETCHED");
     setTimeout(
       () => {
         generateToken().catch(handleTokenError);
       },
       token.expires - new Date().getTime() - ONE_MINUTE,
     ); // One minute before this token expires, fetch a new token
-  }, [setToken, fetchToken]);
+  }, [setToken, fetchToken, setTokenFetchState]);
 
   useEffect(() => {
     generateToken().catch(handleTokenError);
@@ -64,8 +74,8 @@ export function TokenProvider({
     <TokenContext.Provider
       value={{
         value: error
-          ? { _tag: "error", error }
-          : { _tag: "success", token: token! },
+          ? { _tag: "error", tokenFetchState, error }
+          : { _tag: "success", tokenFetchState, token },
       }}
     >
       {children}

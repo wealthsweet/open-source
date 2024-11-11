@@ -1,11 +1,14 @@
-import { useWealthSweetContextWithoutGuarantee } from "src/contexts/wealthsweet-provider";
+import { useWealthSweetContextWithoutGuarantee } from "src/contexts/wealthsweet-context";
 import {
   generateWealthSweetElementUrl,
   type WealthSweetElementOrigin,
 } from "src/lib";
 import type { WealthSweetPerforamnceElementQueryParams } from "src/lib/performance";
 import { useTokenContextWithoutGuarantee } from "../contexts/token-context";
-import { buildContextParamsNotFoundError } from "./utils";
+import {
+  buildContextParamsNotFoundError,
+  chooseHookParamElseContextParam,
+} from "./utils";
 
 export function usePerformanceUrl({
   token: paramToken,
@@ -16,38 +19,57 @@ export function usePerformanceUrl({
     origin: WealthSweetElementOrigin;
   }
 >) {
-  const tokenContext = useTokenContextWithoutGuarantee();
-  const { origin: contextOrigin, contextLoaded: wealthsweetContextLoaded } =
+  const [tokenContextLoaded, tokenContext] = useTokenContextWithoutGuarantee();
+  const [wealthsweetContextLoaded, wealthsweetContext] =
     useWealthSweetContextWithoutGuarantee();
-  if (!contextOrigin && !paramOrigin) {
-    throw buildContextParamsNotFoundError("usePerformanceUrl", ["origin"]);
-  }
-  const origin = (contextOrigin ? contextOrigin : paramOrigin)!;
 
-  const { contextLoaded } = tokenContext;
-  if (!contextLoaded && !paramToken) {
+  const origin = chooseHookParamElseContextParam(
+    paramOrigin,
+    wealthsweetContext?.origin,
+    wealthsweetContextLoaded,
+    buildContextParamsNotFoundError("useWealthsweetIdleStatus", ["origin"]),
+  );
+
+  if (paramToken) {
+    // The token param was passed in so use that.
+    return {
+      isTokenLoaded: true as const,
+      performanceUrl: generateWealthSweetElementUrl({
+        origin,
+        path: "embed/pages/performance",
+        params: { ...params, token: paramToken },
+      }),
+    };
+  }
+  // The token param was not passed in so we need the token context
+  if (!tokenContextLoaded) {
     throw buildContextParamsNotFoundError("usePerformanceUrl", ["token"]);
   }
 
+  // Report something bad happened if fetching the token had an error
   if (tokenContext._tag === "error") {
     return {
       isTokenError: true as const,
       tokenError: tokenContext.error,
+      tokenFetchState: tokenContext.tokenFetchState,
     };
   }
 
-  const returnToken = contextLoaded ? tokenContext.token.token : paramToken;
-  if (returnToken === undefined) {
+  // If there still is no token then we probably have just initialised the hook and the request hasnt fired yet
+  if (!tokenContext.token) {
     return {
       isTokenLoaded: false as const,
+      tokenFetchState: tokenContext.tokenFetchState,
     };
   }
+
   return {
     isTokenLoaded: true as const,
+    tokenFetchState: tokenContext.tokenFetchState,
     performanceUrl: generateWealthSweetElementUrl({
       origin,
       path: "embed/pages/performance",
-      params: { ...params, token: returnToken },
+      params: { ...params, token: tokenContext.token.token },
     }),
   };
 }
