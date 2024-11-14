@@ -57,6 +57,7 @@ export function TokenProvider({
     setTokenFetchState("FETCHING");
     const token = await fetchToken();
     setToken(token);
+    setError(undefined);
     setTokenFetchState("FETCHED");
     setTimeout(
       () => {
