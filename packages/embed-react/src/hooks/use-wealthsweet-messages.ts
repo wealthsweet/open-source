@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useWealthSweetContextWithoutGuarantee } from "src/contexts/wealthsweet-context";
 import type { WealthSweetElementOrigin } from "src/lib";
 import {
@@ -15,6 +15,8 @@ export type UseWealthsweetMessagesProps = {
   origin?: WealthSweetElementOrigin;
 } & Partial<MessagingCallbacks>;
 
+type ListeningState = "INITIALISED" | "LISTENING" | "UNMOUNTED";
+
 export function useWealthsweetMessages({
   origin: paramOrigin,
   onMessage,
@@ -26,9 +28,13 @@ export function useWealthsweetMessages({
   onUserEvent,
   onUserIdle,
 }: UseWealthsweetMessagesProps) {
-  // Even though the message hook handles this it is nicer to fail fast now if this is the only hook the user sees
   const [wealthsweetContextLoaded, wealthsweetContext] =
     useWealthSweetContextWithoutGuarantee();
+  const [isListeningToMessages, setIsListeningToMessages] =
+    useState<ListeningState>("INITIALISED");
+
+  // Even though the message hook handles this it is nicer to fail fast now if this is the only hook the user sees
+  // This will throw an error when the param is not found
   const origin = chooseHookParamElseContextParam(
     paramOrigin,
     wealthsweetContext?.origin,
@@ -69,12 +75,14 @@ export function useWealthsweetMessages({
 
   useEffect(() => {
     window.addEventListener("message", handleMessage);
+    setIsListeningToMessages("LISTENING");
     return () => {
+      setIsListeningToMessages("UNMOUNTED");
       window.removeEventListener("message", handleMessage);
     };
   }, [handleMessage]);
 
   return {
-    isListeningToMessages: true as const,
+    isListeningToMessages: isListeningToMessages == "LISTENING",
   };
 }

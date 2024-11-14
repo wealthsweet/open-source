@@ -8,7 +8,7 @@ import { type WealthSweetToken } from "../utils/token-utils";
 import { createContextAndHook } from "./create-context-and-hook";
 
 export type TokenError = {
-  message: "Failed to fetch token";
+  message: "Failed to generate token";
   error: unknown;
 };
 
@@ -43,7 +43,10 @@ export function TokenProvider({
 
   const handleTokenError = useCallback(
     (error: unknown) => {
-      const tokenErrror = { message: "Failed to fetch token", error } as const;
+      const tokenErrror = {
+        message: "Failed to generate token",
+        error,
+      } as const;
       setError(tokenErrror);
       setTokenFetchState("ERROR");
       if (onFetchTokenError) {
@@ -54,17 +57,20 @@ export function TokenProvider({
   );
 
   const generateToken = useCallback(async () => {
-    setTokenFetchState("FETCHING");
-    const token = await fetchToken();
-    setToken(token);
-    setError(undefined);
-    setTokenFetchState("FETCHED");
-    setTimeout(
-      () => {
-        generateToken().catch(handleTokenError);
-      },
-      token.expires - new Date().getTime() - ONE_MINUTE,
-    ); // One minute before this token expires, fetch a new token
+    try {
+      setTokenFetchState("FETCHING");
+      const token = await fetchToken();
+      setToken(token);
+      setError(undefined);
+      setTokenFetchState("FETCHED");
+      // One minute before this token expires, fetch a new token
+      setTimeout(
+        generateToken,
+        token.expires - new Date().getTime() - ONE_MINUTE,
+      );
+    } catch (e) {
+      handleTokenError(e);
+    }
   }, [setToken, fetchToken, setTokenFetchState]);
 
   useEffect(() => {
