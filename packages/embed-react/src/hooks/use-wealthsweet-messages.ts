@@ -26,7 +26,7 @@ export function useWealthsweetMessages({
   onUserEvent,
   onUserIdle,
 }: UseWealthsweetMessagesProps) {
-  // Even though the message hook handles this it is nicer to refer to the IdleStatus hook if that is the only hook the user sees
+  // Even though the message hook handles this it is nicer to fail fast now if this is the only hook the user sees
   const [wealthsweetContextLoaded, wealthsweetContext] =
     useWealthSweetContextWithoutGuarantee();
   const origin = chooseHookParamElseContextParam(
