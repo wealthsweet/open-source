@@ -11,12 +11,35 @@ import {
   chooseHookParamElseContextParam,
 } from "./utils";
 
+/**
+ * Props for the useWealthsweetMessages hook.
+ */
 export type UseWealthsweetMessagesProps = {
+  /** The origin for the WealthSweet element. */
   origin?: WealthSweetElementOrigin;
 } & Partial<MessagingCallbacks>;
 
+/** Represents the current state of message listening. */
 type ListeningState = "INITIALISED" | "LISTENING" | "UNMOUNTED";
 
+/**
+ * A hook that sets up message listening for WealthSweet elements.
+ * It handles various types of messages and provides callbacks for different events.
+ *
+ * @param {UseWealthsweetMessagesProps} props - The configuration options for the hook.
+ * @param {WealthSweetElementOrigin} [props.origin] - The origin for the WealthSweet element.
+ * @param {Function} [props.onMessage] - Callback for general messages.
+ * @param {Function} [props.onError] - Callback for error messages.
+ * @param {Function} [props.onInitialising] - Callback when initialisation starts.
+ * @param {Function} [props.onInitialisingDone] - Callback when initialisation is complete.
+ * @param {Function} [props.onRendering] - Callback when rendering starts.
+ * @param {Function} [props.onRenderingDone] - Callback when rendering is complete.
+ * @param {Function} [props.onUserEvent] - Callback for user events.
+ * @param {Function} [props.onUserIdle] - Callback when the user becomes idle.
+ *
+ * @returns {Object} An object containing the current listening state.
+ * @returns {boolean} .isListeningToMessages - Whether the hook is currently listening to messages.
+ */
 export function useWealthsweetMessages({
   origin: paramOrigin,
   onMessage,

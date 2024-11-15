@@ -10,6 +10,22 @@ import {
   chooseHookParamElseContextParam,
 } from "./utils";
 
+/**
+ * A hook that generates a URL for the WealthSweet performance element.
+ * It uses either provided parameters or context values for token and origin.
+ *
+ * @param {Object} params - The parameters for generating the performance URL.
+ * @param {string} [params.token] - The token to use for authentication.
+ * @param {WealthSweetElementOrigin} [params.origin] - The origin for the WealthSweet element.
+ * @param {...WealthSweetPerforamnceElementQueryParams} params - Additional query parameters for the performance element.
+ *
+ * @returns {Object} An object containing the performance URL and loading state information.
+ * @property {boolean} isTokenLoaded - Indicates whether the token is loaded.
+ * @property {string} [performanceUrl] - The generated performance URL.
+ * @property {boolean} [isTokenError] - Indicates if there was an error fetching the token.
+ * @property {Object} [tokenError] - The error object if there was an error fetching the token.
+ * @property {string} [tokenFetchState] - The current state of token fetching.
+ */
 export function usePerformanceUrl({
   token: paramToken,
   origin: paramOrigin,
