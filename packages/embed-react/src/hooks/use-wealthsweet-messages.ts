@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { useWealthSweetContextWithoutGuarantee } from "src/contexts/wealthsweet-context";
+import { useOriginContextWithoutGuarantee } from "src/contexts/origin-context";
 import type { WealthSweetElementOrigin } from "src/lib";
 import {
   buildHandleMessage,
@@ -28,8 +28,8 @@ export function useWealthsweetMessages({
   onUserEvent,
   onUserIdle,
 }: UseWealthsweetMessagesProps) {
-  const [wealthsweetContextLoaded, wealthsweetContext] =
-    useWealthSweetContextWithoutGuarantee();
+  const [originContextLoaded, originContext] =
+    useOriginContextWithoutGuarantee();
   const [isListeningToMessages, setIsListeningToMessages] =
     useState<ListeningState>("INITIALISED");
 
@@ -37,9 +37,9 @@ export function useWealthsweetMessages({
   // This will throw an error when the param is not found
   const origin = chooseHookParamElseContextParam(
     paramOrigin,
-    wealthsweetContext?.origin,
-    wealthsweetContextLoaded,
-    buildContextParamsNotFoundError("useWealthsweetIdleStatus", ["origin"]),
+    originContext?.origin,
+    originContextLoaded,
+    buildContextParamsNotFoundError("useWealthsweetMessages", ["origin"]),
   );
 
   const handleMessage = useMemo(

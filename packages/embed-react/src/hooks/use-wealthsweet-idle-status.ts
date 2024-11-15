@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { useWealthSweetContextWithoutGuarantee } from "src/contexts/wealthsweet-context";
+import { useOriginContextWithoutGuarantee } from "src/contexts/origin-context";
 import type { WealthSweetElementOrigin } from "src/lib";
 import {
   maybeCall,
@@ -55,15 +55,15 @@ export function useWealthsweetIdleStatus({
     [setLastActiveTime, setIsIdle, onUserIdle, onUserEvent, timeout],
   );
 
-  const [wealthsweetContextLoaded, wealthsweetContext] =
-    useWealthSweetContextWithoutGuarantee();
+  const [originContextLoaded, originContext] =
+    useOriginContextWithoutGuarantee();
 
   // Even though the message hook handles this it is nicer to fail fast now if this is the only hook the user sees
   // This will throw an error when the param is not found
   const origin = chooseHookParamElseContextParam(
     paramOrigin,
-    wealthsweetContext?.origin,
-    wealthsweetContextLoaded,
+    originContext?.origin,
+    originContextLoaded,
     buildContextParamsNotFoundError("useWealthsweetIdleStatus", ["origin"]),
   );
 

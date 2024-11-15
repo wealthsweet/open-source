@@ -1,19 +1,8 @@
 import type { PropsWithChildren } from "react";
-import { WealthSweetElementOrigin } from "src/lib";
-import { createContextAndHook } from "./create-context-and-hook";
+import { OriginContext, OriginProviderProps } from "./origin-context";
 import { TokenProvider, TokenProviderProps } from "./token-context";
 
-export const [
-  WealthSweetContext,
-  useWealthSweetContext,
-  useWealthSweetContextWithoutGuarantee,
-] = createContextAndHook<{ origin?: WealthSweetElementOrigin }>(
-  "WealthSweetContext",
-);
-
-export type WealthSweetProviderProps = {
-  origin?: WealthSweetElementOrigin;
-} & TokenProviderProps;
+export type WealthSweetProviderProps = OriginProviderProps & TokenProviderProps;
 
 export function WealthSweetProvider({
   children,
@@ -22,13 +11,13 @@ export function WealthSweetProvider({
   onFetchTokenError,
 }: PropsWithChildren<WealthSweetProviderProps>) {
   return (
-    <WealthSweetContext.Provider value={{ value: { origin } }}>
+    <OriginContext.Provider value={{ value: { origin } }}>
       <TokenProvider
         fetchToken={fetchToken}
         onFetchTokenError={onFetchTokenError}
       >
         {children}
       </TokenProvider>
-    </WealthSweetContext.Provider>
+    </OriginContext.Provider>
   );
 }

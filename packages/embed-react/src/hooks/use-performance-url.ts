@@ -1,4 +1,4 @@
-import { useWealthSweetContextWithoutGuarantee } from "src/contexts/wealthsweet-context";
+import { useOriginContextWithoutGuarantee } from "src/contexts/origin-context";
 import {
   generateWealthSweetElementUrl,
   type WealthSweetElementOrigin,
@@ -20,14 +20,14 @@ export function usePerformanceUrl({
   }
 >) {
   const [tokenContextLoaded, tokenContext] = useTokenContextWithoutGuarantee();
-  const [wealthsweetContextLoaded, wealthsweetContext] =
-    useWealthSweetContextWithoutGuarantee();
+  const [originContextLoaded, originContext] =
+    useOriginContextWithoutGuarantee();
 
   const origin = chooseHookParamElseContextParam(
     paramOrigin,
-    wealthsweetContext?.origin,
-    wealthsweetContextLoaded,
-    buildContextParamsNotFoundError("useWealthsweetIdleStatus", ["origin"]),
+    originContext?.origin,
+    originContextLoaded,
+    buildContextParamsNotFoundError("usePerformanceUrl", ["origin"]),
   );
 
   if (paramToken) {
