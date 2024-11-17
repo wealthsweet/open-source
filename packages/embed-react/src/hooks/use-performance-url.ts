@@ -50,6 +50,7 @@ export function usePerformanceUrl({
     // The token param was passed in so use that.
     return {
       isTokenLoaded: true as const,
+      isTokenError: false as const,
       performanceUrl: generateWealthSweetElementUrl({
         origin,
         path: "embed/pages/performance",
@@ -65,6 +66,7 @@ export function usePerformanceUrl({
   // Report something bad happened if fetching the token had an error
   if (tokenContext._tag === "error") {
     return {
+      isTokenLoaded: false as const,
       isTokenError: true as const,
       tokenError: tokenContext.error,
       tokenFetchState: tokenContext.tokenFetchState,
@@ -75,12 +77,14 @@ export function usePerformanceUrl({
   if (!tokenContext.token) {
     return {
       isTokenLoaded: false as const,
+      isTokenError: false as const,
       tokenFetchState: tokenContext.tokenFetchState,
     };
   }
 
   return {
     isTokenLoaded: true as const,
+    isTokenError: false as const,
     tokenFetchState: tokenContext.tokenFetchState,
     performanceUrl: generateWealthSweetElementUrl({
       origin,

@@ -1,5 +1,5 @@
 import type { PropsWithChildren } from "react";
-import { OriginContext, OriginProviderProps } from "./origin-context";
+import { OriginProvider, OriginProviderProps } from "./origin-context";
 import { TokenProvider, TokenProviderProps } from "./token-context";
 
 /**
@@ -24,13 +24,13 @@ export function WealthSweetProvider({
   onFetchTokenError,
 }: PropsWithChildren<WealthSweetProviderProps>) {
   return (
-    <OriginContext.Provider value={{ value: { origin } }}>
+    <OriginProvider origin={origin}>
       <TokenProvider
         fetchToken={fetchToken}
         onFetchTokenError={onFetchTokenError}
       >
         {children}
       </TokenProvider>
-    </OriginContext.Provider>
+    </OriginProvider>
   );
 }
