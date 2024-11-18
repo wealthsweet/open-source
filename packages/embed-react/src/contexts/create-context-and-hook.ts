@@ -32,10 +32,7 @@ export const createContextAndHook = <CtxVal>(
 ): [
   ContextOf<CtxVal>,
   UseCtxFn<CtxVal & { contextLoaded: true }>,
-  UseCtxFn<
-    | (CtxVal & { contextLoaded: true })
-    | (Partial<CtxVal> & { contextLoaded: false })
-  >,
+  UseCtxFn<[true, CtxVal] | [false, null]>,
 ] => {
   const { assertCtxFn = assertContextExists } = options || {};
   const Ctx = createContext<{ value: CtxVal } | undefined>(undefined);
@@ -49,13 +46,11 @@ export const createContextAndHook = <CtxVal>(
 
   const useCtxWithoutGuarantee = () => {
     const ctx = useContext(Ctx);
-    return ctx === undefined
-      ? ({ contextLoaded: false } as Partial<CtxVal> & {
-          contextLoaded: boolean;
-        })
-      : ({ ...ctx?.value, contextLoaded: true } as CtxVal & {
-          contextLoaded: boolean;
-        });
+    if (ctx) {
+      return [true, ctx.value] as [true, CtxVal];
+    } else {
+      return [false, null] as [false, null];
+    }
   };
 
   return [Ctx, useCtx, useCtxWithoutGuarantee];
