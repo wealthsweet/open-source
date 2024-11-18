@@ -88,9 +88,10 @@ export function buildHandleMessage(
     const allowedOrigin = `${protocol}://${host}`;
 
     if (event.origin !== allowedOrigin) {
-      console.warn(
-        `Message received from unknown origin: ${event.origin}. Expected origin: ${allowedOrigin}`,
-      );
+      // console.warn(
+      //   `Message received from unknown origin: ${event.origin}. Expected origin: ${allowedOrigin}`,
+      // );
+      // This gets noisy if user has other apps sending messages over the post message api
       return;
     }
     const parsedMessage = embedMessageSchema.safeParse(event.data);
