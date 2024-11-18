@@ -49,8 +49,6 @@ export type TokenProviderProps = PropsWithChildren<{
   onFetchTokenError?: (error: TokenError) => void;
 }>;
 
-let isFirstRender = true;
-
 /**
  * Provider component for managing token state and fetching. Handles automatic token refresh
  * and error handling for token generation.
@@ -82,6 +80,7 @@ export function TokenProvider({
       } as const;
       setError(tokenErrror);
       setTokenFetchState("ERROR");
+      setToken(undefined);
       if (onFetchTokenError) {
         onFetchTokenError(tokenErrror);
       }
@@ -105,21 +104,17 @@ export function TokenProvider({
   }, [setToken, fetchToken, setTokenFetchState, handleTokenError]);
 
   useEffect(() => {
-    if (isFirstRender) {
-      generateToken();
-      isFirstRender = false;
-    }
-
-    if (tokenTimeout.current !== undefined) {
-      clearTimeout(tokenTimeout.current);
-    }
-
     if (token) {
+      if (tokenTimeout.current !== undefined) {
+        clearTimeout(tokenTimeout.current);
+      }
       // One minute before this token expires, fetch a new token
       tokenTimeout.current = setTimeout(
         generateToken,
         token.expires - new Date().getTime() - ONE_MINUTE,
       );
+    } else {
+      generateToken();
     }
 
     return () => {
