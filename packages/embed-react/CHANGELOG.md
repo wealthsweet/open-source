@@ -1,5 +1,12 @@
 # @wealthsweet/embed-react
 
+## 1.1.1
+
+### Patch Changes
+
+- 9c41e94: Make the message api less noisy when other apps use the post message api
+- 9c41e94: Regenerate token when the error handler changes
+
 ## 1.1.0
 
 ### Minor Changes
