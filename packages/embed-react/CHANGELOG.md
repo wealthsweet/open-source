@@ -1,5 +1,11 @@
 # @wealthsweet/embed-react
 
+## 1.1.2
+
+### Patch Changes
+
+- 0774d01: Update the way useEffect will schedule token refreshes
+
 ## 1.1.1
 
 ### Patch Changes
