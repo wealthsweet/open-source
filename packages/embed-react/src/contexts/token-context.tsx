@@ -102,7 +102,7 @@ export function TokenProvider({
     } catch (e) {
       handleTokenError(e);
     }
-  }, [setToken, fetchToken, setTokenFetchState]);
+  }, [setToken, fetchToken, setTokenFetchState, handleTokenError]);
 
   useEffect(() => {
     if (isFirstRender) {
