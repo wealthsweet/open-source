@@ -44,21 +44,22 @@ export const embedRequestParams = z.object({
     description: "The access token for this embedded context",
     example: "pk_test_TOKEN",
   }),
-  from: z.string().date().optional().openapi({
+  from: z.string().date().optional().nullable().openapi({
     description: "The date to report performance calcs from",
     example: "2020-01-01",
   }),
-  to: z.string().date().optional().openapi({
+  to: z.string().date().optional().nullable().openapi({
     description: "The date to report performance calcs to",
     example: "2021-01-01",
   }),
-  currencyIsoCode: z.string().min(3).max(3).optional().openapi({
+  currencyIsoCode: z.string().min(3).max(3).optional().nullable().openapi({
     description: "The currency iso code to report performance in",
     example: "GBP",
   }),
   investorExtRefs: z
     .array(z.string())
     .optional()
+    .nullable()
     .openapi({
       description: "A list of investor references to calculate performance for",
       example: ["inv-1", "inv-2"],
@@ -70,6 +71,7 @@ export const embedRequestParams = z.object({
   investorAccountExtRefs: z
     .array(z.string())
     .optional()
+    .nullable()
     .openapi({
       description:
         "A list of investor account references to calculate performance for",
