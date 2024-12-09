@@ -1,5 +1,11 @@
 # @wealthsweet/http-apis
 
+## 1.1.0
+
+### Minor Changes
+
+- 500b7b3: Add health API and minor description changes
+
 ## 1.0.1
 
 ### Patch Changes
