@@ -45,15 +45,15 @@ export const embedRequestParams = z.object({
     example: "pk_test_TOKEN",
   }),
   from: z.string().date().optional().openapi({
-    description: "The date to report performance calcs from",
+    description: "The start date for calculating performance",
     example: "2020-01-01",
   }),
   to: z.string().date().optional().openapi({
-    description: "The date to report performance calcs to",
+    description: "The end date for calculating performance",
     example: "2021-01-01",
   }),
   currencyIsoCode: z.string().min(3).max(3).optional().openapi({
-    description: "The currency iso code to report performance in",
+    description: "The currency ISO code to report performance in",
     example: "GBP",
   }),
   investorExtRefs: z
@@ -81,6 +81,22 @@ export const embedRequestParams = z.object({
     }),
 });
 
+export const portfolioSummaryRequestParams = z.object({
+  from: z.string().date().optional().openapi({
+    description: "The start date for calculating the portfolio summary",
+    example: "2020-01-01",
+  }), // TODO: Should these be optional?
+  to: z.string().date().optional().openapi({
+    description: "The end date for calculating the portfolio summary",
+    example: "2021-01-01",
+  }), // TODO: Should these be optional?
+  currencyIsoCode: z.string().min(3).max(3).optional().openapi({
+    description: "The currency ISO code to report performance in",
+    example: "GBP",
+  }),
+  // TODO: Parameters for calculating a specific portfolio summary.. portfolioId/investorIds/investorAccountids? Token?
+});
+
 export const serviceHealth = z.object({
   health: z.enum(["Healthy", "Unhealthy"]).openapi({
     description: "The health of the service",
@@ -97,6 +113,163 @@ export const serviceHealthResponse = z.object({
   api: serviceHealth,
   database: serviceHealth,
   azure: serviceHealth,
+});
+
+// TODO: For all opf these, what is optional?
+export const portfolioSummaryHoldingAllocation = z.object({
+  assetTypes: z
+    .string()
+    .array()
+    .openapi({ description: "A list of asset type classifications" }), // TODO: List of AssetType objects?
+  regions: z.string().array().openapi({
+    description: "A list of geographical regions represented in the portfolio",
+  }), // TODO: List of Region objects?
+  sectors: z.string().array().openapi({
+    description: "A list of industry sectors represented in the portfolio",
+  }), // TODO: List of Sector objects?
+  fixedIncomeClass: z
+    .string()
+    .openapi({ description: "The classification of fixed income assets" }), // TODO: Correct type?
+  creditRatings: z.string().array().openapi({
+    description:
+      "A list of credit ratings for the portfolio's fixed income assets",
+  }), // TODO: Correct type?
+});
+
+export const portfolioSummarySinceInception = z.object({
+  paidIn: z
+    .number()
+    .openapi({ description: "The total amount contributed since inception" }),
+  withdrawals: z
+    .number()
+    .openapi({ description: "The total amount withdrawn since inception" }),
+  capitalGainLoss: z.number().openapi({
+    description: "The net capital gains or losses incurred since inception",
+  }),
+  interestIncomeReceived: z.number().openapi({
+    description: "The total interest or income received since inception",
+  }), // TODO: interestIncomeReceived or incomeReceived or interestReceived?
+  currentValuation: z
+    .number()
+    .openapi({ description: "The current valuation as of now" }),
+  return: z
+    .number()
+    .openapi({ description: "The total return achieved since inception" }),
+  annualisedReturn: z.number().openapi({
+    description:
+      "The annualised return based on the entire duration since inception",
+  }),
+  volatility: z
+    .number()
+    .openapi({ description: "The volatility measurement since inception" }),
+  maxDrawdown: z
+    .number()
+    .openapi({ description: "The maximum observed drawdown since inception" }),
+});
+
+export const portfolioSummaryForPeriod = z.object({
+  initialValuation: z.number().openapi({
+    description: "The starting valuation at the beginning of the period",
+  }),
+  paidIn: z
+    .number()
+    .openapi({ description: "The total amount contributed during the period" }),
+  withdrawals: z
+    .number()
+    .openapi({ description: "The total amount withdrawn during the period" }),
+  capitalGainLoss: z.number().openapi({
+    description: "The net capital gains or losses incurred during the period",
+  }),
+  interestIncomeReceived: z.number().openapi({
+    description: "The total interest or income received during the period",
+  }),
+  outgoingValuation: z
+    .number()
+    .openapi({ description: "The valuation at the end of the period" }),
+  valuation: z.number().openapi({
+    description: "The net valuation for the period, accounting for all changes",
+  }), // TODO: Is this the same as outgoingValuation above?
+  annualised: z.number().openapi({
+    description: "The annualised valuation based on the period's data",
+  }),
+  volatility: z
+    .number()
+    .openapi({ description: "The volatility measurement for the period" }),
+  maxDrawdown: z.number().openapi({
+    description: "The maximum observed drawdown during the period",
+  }),
+});
+
+export const portfolioSummaryHoldingInstrument = z.object({
+  name: z
+    .string()
+    .openapi({ description: "The name of the financial instrument" }),
+  cost: z
+    .number()
+    .openapi({ description: "The cost or purchase price of the instrument" }),
+  category: z
+    .string()
+    .openapi({ description: "The category or type of the instrument" }), // TODO: Category object?
+  weight: z.number().openapi({
+    description: "The weight percentage of the instrument in the portfolio",
+  }),
+  value: z
+    .number()
+    .openapi({ description: "The current market value of the instrument" }),
+  unrealisedGainLoss: z
+    .number()
+    .openapi({ description: "The unrealised gain or loss for the instrument" }),
+  allocations: z.array(portfolioSummaryHoldingAllocation).openapi({
+    description: "The allocation of the instrument within the portfolio",
+  }),
+});
+
+export const portfolioSummaryHolding = z.object({
+  modelName: z.string().openapi({ description: "The name of the model" }),
+  modelCost: z
+    .number()
+    .openapi({ description: "The cost associated to the model" }),
+  instruments: z.array(portfolioSummaryHoldingInstrument).openapi({
+    description: "The list of instruments associated with the model",
+  }),
+});
+
+export const portfolioSummary = z.object({
+  owners: z
+    .string()
+    .array()
+    .openapi({ description: "A list of owners associated with the portfolio" }), // TODO: List of Owner objects?
+  wrapperType: z
+    .string()
+    .openapi({ description: "The type of investment wrapper" }),
+  provider: z.string().openapi({
+    description: "The name of the provider offering the portfolio", // TODO: Provider object?
+  }),
+  providerCost: z.number().openapi({
+    description: "The cost charged by the provider for managing the portfolio",
+  }),
+  nickname: z
+    .string()
+    .openapi({ description: "A nickname or alias for the portfolio" }),
+  planNumber: z
+    .string()
+    .openapi({ description: "A unique identifier for the portfolio plan" }),
+  inceptionDate: z
+    .string()
+    .date()
+    .openapi({ description: "The date when the portfolio was initiated" }),
+  regularMonthlyPremiumsWithdrawals: z.number().openapi({
+    description: "The amount of regular monthly premiums or withdrawals",
+  }), // TODO: regularMonthlyPremiumsWithdrawals or regularMonthlyPremiums or regularMonthlyWithdrawals?
+  holdings: z
+    .array(portfolioSummaryHolding)
+    .openapi({ description: "A list of holdings within the portfolio" }),
+  sinceInception: portfolioSummarySinceInception.openapi({
+    description: "Performance of the portfolio since its inception",
+  }),
+  forPeriod: portfolioSummaryForPeriod.openapi({
+    description: "Performance of the portfolio for a specific period",
+  }),
 });
 
 export function createPerformanceSwaggerFile(): oas31.OpenAPIObject {
@@ -128,6 +301,14 @@ export function createPerformanceSwaggerFile(): oas31.OpenAPIObject {
       {
         name: "auth",
         description: "Operations based around authentication",
+        externalDocs: {
+          description: "Find out more",
+          url: "http://docs.wealthsweet.com",
+        },
+      },
+      {
+        name: "summary",
+        description: "Operations based around portfolio summaries",
         externalDocs: {
           description: "Find out more",
           url: "http://docs.wealthsweet.com",
@@ -220,6 +401,48 @@ export function createPerformanceSwaggerFile(): oas31.OpenAPIObject {
                 "text/html": { schema: z.string() },
               },
             },
+          },
+        },
+      },
+      "/api/v1/portfolio-summary": {
+        get: {
+          tags: ["summary"],
+          summary: "Retrieve the portfolio summary",
+          operationId: "getPortfolioSummary",
+          requestParams: {
+            query: portfolioSummaryRequestParams,
+          },
+          responses: {
+            "200": {
+              description: "Successfully retrieved the portfolio summary",
+              content: {
+                "application/json": { schema: portfolioSummary },
+              },
+            },
+            "400": {
+              description: "Request failed to validate",
+              content: {
+                "application/json": { schema: errorResponse },
+              },
+            },
+            "401": {
+              description: "Failed to authenticate",
+              content: {
+                "application/json": { schema: errorResponse },
+              },
+            },
+            "403": {
+              description: "Forbidden",
+              content: {
+                "application/json": { schema: errorResponse },
+              },
+            }, // TODO: Is this possible?
+            "500": {
+              description: "Internal server error",
+              content: {
+                "application/json": { schema: errorResponse },
+              },
+            }, // TODO: Should we be including 500 responses in our swagger - ideally we (the developers) should always handle this but it may happen
           },
         },
       },
