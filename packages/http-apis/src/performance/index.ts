@@ -14,6 +14,10 @@ export const generateAuthTokenRequestBody = z.object({
   clientSecret: z.string().openapi({
     example: "17bd3fbcda124f7292445d3ab1c1c417",
   }),
+  brandingId: z.string().optional().openapi({
+    description:
+      "The identifier of the branding to use. If not provided, the default client branding will be used.",
+  }),
   expires: z.coerce.number().min(0, invalidExpiresMessage).nullable().openapi({
     description: "The UTC timestamp at which this token will expire",
   }),
