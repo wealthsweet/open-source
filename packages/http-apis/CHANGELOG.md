@@ -1,5 +1,12 @@
 # @wealthsweet/http-apis
 
+## 1.1.0
+
+### Minor Changes
+
+- 500b7b3: Add health API and minor description changes
+- 95f63fc: Add brandingId to token request
+
 ## 1.0.1
 
 ### Patch Changes
