@@ -27,14 +27,18 @@ export const generateAuthTokenRequestBody = z.object({
     Or a different session ref may be issued for the same nodeRefs to sidestep any existing caches.`,
     example: "session-1",
   }),
-  nodes: z.array(z.string()).openapi({
-    description: "A list of references to nodes that this user has access to",
-    example: ["node-1", "node-2"],
-    items: {
-      type: "string",
-      example: ["node-1"],
-    },
-  }),
+  nodes: z
+    .array(z.string())
+    .optional()
+    .openapi({
+      description:
+        "A list of references to nodes that this user has access to. If not provided, nodes will not be included in the generated token.",
+      example: ["node-1", "node-2"],
+      items: {
+        type: "string",
+        example: ["node-1"],
+      },
+    }),
 });
 
 export const generateAuthTokenResponse = z.object({
