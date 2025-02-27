@@ -2,7 +2,7 @@
   "name": "@wealthsweet/embed-message-api",
   "version": "1.0.0",
   "dependencies": {
-    "zod": "^3.23.8"
+    "zod": "^3.24.1"
   },
   "devDependencies": {
     "eslint": "^9.13.0",
