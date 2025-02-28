@@ -22,17 +22,30 @@ export type TokenError = {
 export type TokenFetchState = "INITIALISED" | "FETCHING" | "FETCHED" | "ERROR";
 
 /**
+ * Represents the context value for the token context if the token was successfully fetched.
+ */
+type TokenContextSuccess = {
+  _tag: "success";
+  tokenFetchState: TokenFetchState;
+  token?: WealthSweetToken;
+  forceRefetch: () => void;
+};
+
+/**
+ * Represents the context value for the token context if an error occurred.
+ */
+type TokenContextError = {
+  _tag: "error";
+  tokenFetchState: TokenFetchState;
+  error: TokenError;
+  forceRefetch: () => void;
+};
+
+/**
  * Creates a context and hooks for managing token state.
  */
 export const [TokenContext, useTokenContext, useTokenContextWithoutGuarantee] =
-  createContextAndHook<
-    | {
-        _tag: "success";
-        tokenFetchState: TokenFetchState;
-        token?: WealthSweetToken;
-      }
-    | { _tag: "error"; tokenFetchState: TokenFetchState; error: TokenError }
-  >("TokenContext");
+  createContextAndHook<TokenContextSuccess | TokenContextError>("TokenContext");
 
 /**
  * Constant representing one minute in milliseconds.
@@ -65,6 +78,7 @@ export function TokenProvider({
   const [token, setToken] = useState<WealthSweetToken>();
   const [tokenFetchState, setTokenFetchState] =
     useState<TokenFetchState>("INITIALISED");
+  const [shouldForceRefetch, setShouldForceRefetch] = useState(false);
   const [error, setError] = useState<TokenError>();
   const tokenTimeout = useRef<number>();
 
@@ -101,8 +115,28 @@ export function TokenProvider({
     } catch (e) {
       handleTokenError(e);
     }
-  }, [setToken, fetchToken, setTokenFetchState, handleTokenError]);
+  }, [setToken, setError, fetchToken, setTokenFetchState, handleTokenError]);
 
+  /**
+   * Sets the forceRefetchState to true, eventually triggering a token refetch.
+   */
+  const forceRefetch = useCallback(() => {
+    setShouldForceRefetch(true);
+  }, [setShouldForceRefetch]);
+
+  /**
+   * Listens for forceRefetchState state changes and triggers a token refetch if necessary.
+   */
+  useEffect(() => {
+    if (shouldForceRefetch) {
+      void generateToken();
+      setShouldForceRefetch(false);
+    }
+  }, [shouldForceRefetch, setShouldForceRefetch, generateToken]);
+
+  /**
+   * Manages token generation and refresh.
+   */
   useEffect(() => {
     if (token) {
       if (tokenTimeout.current !== undefined) {
@@ -114,7 +148,7 @@ export function TokenProvider({
         token.expires - new Date().getTime() - ONE_MINUTE,
       );
     } else {
-      generateToken();
+      void generateToken();
     }
 
     return () => {
@@ -128,8 +162,8 @@ export function TokenProvider({
     <TokenContext.Provider
       value={{
         value: error
-          ? { _tag: "error", tokenFetchState, error }
-          : { _tag: "success", tokenFetchState, token },
+          ? { _tag: "error", tokenFetchState, error, forceRefetch }
+          : { _tag: "success", tokenFetchState, token, forceRefetch },
       }}
     >
       {children}
