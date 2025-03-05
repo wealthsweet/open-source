@@ -96,10 +96,10 @@ export function TokenProvider({
   );
 
   /**
-   * Builds a function that generates a new token and schedules the next token generation.
+   * Fetches a new token and does the necessary state updates.
    * @param fetchToken - The async function that fetches a new token
    */
-  const generateTokenBuilder = useCallback(
+  const processTokenFetch = useCallback(
     async (fetchToken: () => Promise<WealthSweetToken>) => {
       setTokenFetchState("FETCHING");
       const token = await fetchToken();
@@ -112,31 +112,6 @@ export function TokenProvider({
   );
 
   /**
-   * Generates a new token and handles any errors that occur during token generation.
-   * This function will be re-created if the fetchToken or onFetchTokenError function changes, and so possibly updates every render cycle.
-   * As a result of this, be careful using this as a dependency in useEffect or useCallback hooks, as it may cause unnecessary re-renders.
-   */
-  const generateToken = useCallback(
-    () =>
-      generateTokenBuilder(fetchToken).catch((error) => {
-        const tokenErrror = {
-          message: "Failed to generate token",
-          error,
-        } as const;
-        internallyHandleTokenFetchErrors(tokenErrror);
-        if (onFetchTokenError) {
-          onFetchTokenError(tokenErrror);
-        }
-      }),
-    [
-      generateTokenBuilder,
-      internallyHandleTokenFetchErrors,
-      fetchToken,
-      onFetchTokenError,
-    ],
-  );
-
-  /**
    * Sets the forceRefetchState to true, eventually triggering a token refetch.
    */
   const forceRefetch = useCallback(() => {
@@ -144,11 +119,45 @@ export function TokenProvider({
   }, [setShouldForceRefetch]);
 
   /**
+   * Generates a new token and handles any errors that occur during token generation.
+   * This function will be re-created if the fetchToken or onFetchTokenError function changes, and so possibly updates every render cycle.
+   * As a result of this, be careful using this as a dependency in useEffect or useCallback hooks, as it may cause unnecessary re-renders.
+   */
+  const generateToken = useCallback(async () => {
+    try {
+      const { expires } = await processTokenFetch(fetchToken);
+      if (tokenTimeout.current !== undefined) {
+        clearTimeout(tokenTimeout.current);
+      }
+      // One minute before this token expires, fetch a new token
+      tokenTimeout.current = setTimeout(
+        forceRefetch,
+        expires - new Date().getTime() - ONE_MINUTE,
+      );
+    } catch (error) {
+      const tokenErrror = {
+        message: "Failed to generate token",
+        error,
+      } as const;
+      internallyHandleTokenFetchErrors(tokenErrror);
+      if (onFetchTokenError) {
+        onFetchTokenError(tokenErrror);
+      }
+    }
+  }, [
+    processTokenFetch,
+    forceRefetch,
+    internallyHandleTokenFetchErrors,
+    fetchToken,
+    onFetchTokenError,
+  ]);
+
+  /**
    * Listens for forceRefetchState state changes and triggers a token refetch if necessary.
    */
   useEffect(() => {
     if (shouldForceRefetch) {
-      void generateToken();
+      generateToken();
       setShouldForceRefetch(false);
     }
   }, [shouldForceRefetch, setShouldForceRefetch]);
@@ -163,26 +172,21 @@ export function TokenProvider({
    */
   useEffect(() => {
     if (!token) {
-      generateToken().then((token) => {
-        if (token) {
-          if (tokenTimeout.current !== undefined) {
-            clearTimeout(tokenTimeout.current);
-          }
-          // One minute before this token expires, fetch a new token
-          tokenTimeout.current = setTimeout(
-            forceRefetch,
-            token.expires - new Date().getTime() - ONE_MINUTE,
-          );
-        }
-      });
+      generateToken();
     }
+  }, [generateToken]);
 
-    return () => {
+  /**
+   * When unmounting, clear the token timeout.
+   */
+  useEffect(
+    () => () => {
       if (tokenTimeout.current !== undefined) {
         clearTimeout(tokenTimeout.current);
       }
-    };
-  }, [generateToken]);
+    },
+    [generateToken],
+  );
 
   return (
     <TokenContext.Provider
