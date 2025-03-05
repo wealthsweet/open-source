@@ -152,7 +152,7 @@ export function TokenProvider({
     onFetchTokenError,
   ]);
 
-  /**
+  /*
    * Listens for forceRefetchState state changes and triggers a token refetch if necessary.
    */
   useEffect(() => {
@@ -175,7 +175,7 @@ export function TokenProvider({
       void generateToken();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [generateToken]);
+  }, []);
 
   /**
    * When unmounting, clear the token timeout.
@@ -186,7 +186,7 @@ export function TokenProvider({
         clearTimeout(tokenTimeout.current);
       }
     },
-    [generateToken],
+    [],
   );
 
   return (
