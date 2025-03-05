@@ -157,23 +157,24 @@ export function TokenProvider({
    */
   useEffect(() => {
     if (shouldForceRefetch) {
-      generateToken();
+      void generateToken();
       setShouldForceRefetch(false);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [shouldForceRefetch, setShouldForceRefetch]);
 
   /**
    * Manages token generation and refresh.
    * This will run once when the component mounts, and will run again if the generateToken function changes, potentially every render cycle.
-   * Since this only does something when the token is not set, it should not cause unnecessary re-renders.
+   * Since this only does something when the token is not set and the tokenFetchState is INITIALISED, it should not cause unnecessary re-renders.
    * The token should always be set after the first render that the generateToken function succeeds.
-   * If a subsequent render causes the generateToken function to fail, then the token is set to undefined and the state is reset to the inital state.
    * All other token updates are done through the forceRefetch function, or the tokenTimeout.
    */
   useEffect(() => {
-    if (!token) {
-      generateToken();
+    if (!token && tokenFetchState === "INITIALISED") {
+      void generateToken();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [generateToken]);
 
   /**
