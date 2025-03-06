@@ -5,7 +5,7 @@
     "@eslint/compat": "^1.2.7",
     "@eslint/eslintrc": "^3.3.0",
     "@eslint/js": "^9.13.0",
-    "@types/react": "*",
+    "@types/react": "19.0.10",
     "@wealthsweet/embed-message-api": "workspace:*",
     "@wealthsweet/http-apis": "workspace:*",
     "eslint": "^9.13.0",
@@ -23,7 +23,7 @@
   "main": "dist/index.cjs",
   "module": "dist/index.js",
   "peerDependencies": {
-    "react": ">=18 || >=19.0.0-beta"
+    "react": ">=18 || >=19"
   },
   "publishConfig": {
     "access": "public"

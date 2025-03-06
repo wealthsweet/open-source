@@ -80,7 +80,7 @@ export function TokenProvider({
     useState<TokenFetchState>("INITIALISED");
   const [shouldForceRefetch, setShouldForceRefetch] = useState(false);
   const [error, setError] = useState<TokenError>();
-  const tokenTimeout = useRef<number>();
+  const tokenTimeout = useRef<number>(undefined);
 
   /**
    * Internally handles token fetch errors.
