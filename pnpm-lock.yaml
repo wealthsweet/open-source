@@ -52,7 +52,7 @@ importers:
   packages/embed-react:
     dependencies:
       react:
-        specifier: '>=18 || >=19.0.0-beta'
+        specifier: '>=18 || >=19'
         version: 18.3.1
     devDependencies:
       '@eslint/compat':
@@ -65,8 +65,8 @@ importers:
         specifier: ^9.13.0
         version: 9.21.0
       '@types/react':
-        specifier: '*'
-        version: 18.3.12
+        specifier: 19.0.10
+        version: 19.0.10
       '@wealthsweet/embed-message-api':
         specifier: workspace:*
         version: link:../embed-message-api
@@ -106,9 +106,6 @@ importers:
       eslint:
         specifier: 9.13.0
         version: 9.13.0
-      openapi-fetch:
-        specifier: 0.12.2
-        version: 0.12.2
       openapi-typescript:
         specifier: 7.4.1
         version: 7.4.1(typescript@5.6.3)
@@ -575,11 +572,8 @@ packages:
   '@types/node@22.7.5':
     resolution: {integrity: sha512-jML7s2NAzMWc//QSJ1a3prpk78cOPchGvXJsC3C6R6PSMoooztvRVQEz89gmBTBY1SPMaqo5teB4uNHPdetShQ==}
 
-  '@types/prop-types@15.7.13':
-    resolution: {integrity: sha512-hCZTSvwbzWGvhqxp/RqVqwU999pBf2vp7hzIjiYOsl8wqOmUxkQ6ddw1cV3l8811+kdUFus/q4d1Y3E3SyEifA==}
-
-  '@types/react@18.3.12':
-    resolution: {integrity: sha512-D2wOSq/d6Agt28q7rSI3jhU7G6aiuzljDGZ2hTZHIkrTLUI+AF3WMeKkEZ9nN2fkBAlcktT6vcZjDFiIhMYEQw==}
+  '@types/react@19.0.10':
+    resolution: {integrity: sha512-JuRQ9KXLEjaUNjTWpzuR231Z2WpIwczOkBEIvbHNCzQefFIT0L8IqE6NV6ULLyC1SI/i234JnDoMkfg+RjQj2g==}
 
   '@typescript-eslint/eslint-plugin@8.25.0':
     resolution: {integrity: sha512-VM7bpzAe7JO/BFf40pIT1lJqS/z1F8OaSsUB3rpFJucQA4cOSuH2RVVVkFULN+En0Djgr29/jb4EQnedUo95KA==}
@@ -1589,12 +1583,6 @@ packages:
   onetime@5.1.2:
     resolution: {integrity: sha512-kbpaSSGJTWdAY5KPVeMOKXSrPtr8C8C7wodJbcsd51jRnmD+GZu8Y0VoU6Dm5Z4vWr0Ig/1NKuWRKf7j5aaYSg==}
     engines: {node: '>=6'}
-
-  openapi-fetch@0.12.2:
-    resolution: {integrity: sha512-ctMQ4LkkSWfIDUMuf1SYuPMsQ7ePcWAkYaMPW1lCDdk4WlV3Vulq1zoyGrwnFVvrBs5t7OOqNF+EKa8SAaovEA==}
-
-  openapi-typescript-helpers@0.0.13:
-    resolution: {integrity: sha512-z44WK2e7ygW3aUtAtiurfEACohf/Qt9g6BsejmIYgEoY4REHeRzgFJmO3ium0libsuzPc145I+8lE9aiiZrQvQ==}
 
   openapi-typescript@7.4.1:
     resolution: {integrity: sha512-HrRoWveViADezHCNgQqZmPKmQ74q7nuH/yg9ursFucZaYQNUqsX38fE/V2sKBHVM+pws4tAHpuh/ext2UJ/AoQ==}
@@ -2778,11 +2766,8 @@ snapshots:
     dependencies:
       undici-types: 6.19.8
 
-  '@types/prop-types@15.7.13': {}
-
-  '@types/react@18.3.12':
+  '@types/react@19.0.10':
     dependencies:
-      '@types/prop-types': 15.7.13
       csstype: 3.1.3
 
   '@typescript-eslint/eslint-plugin@8.25.0(@typescript-eslint/parser@8.25.0(eslint@9.13.0)(typescript@5.5.4))(eslint@9.13.0)(typescript@5.5.4)':
@@ -3964,12 +3949,6 @@ snapshots:
   onetime@5.1.2:
     dependencies:
       mimic-fn: 2.1.0
-
-  openapi-fetch@0.12.2:
-    dependencies:
-      openapi-typescript-helpers: 0.0.13
-
-  openapi-typescript-helpers@0.0.13: {}
 
   openapi-typescript@7.4.1(typescript@5.6.3):
     dependencies:

@@ -80,42 +80,36 @@ export function TokenProvider({
     useState<TokenFetchState>("INITIALISED");
   const [shouldForceRefetch, setShouldForceRefetch] = useState(false);
   const [error, setError] = useState<TokenError>();
-  const tokenTimeout = useRef<number>();
+  const tokenTimeout = useRef<number>(undefined);
 
   /**
-   * Handles token fetch errors.
-   * @param error - The error that occurred during token fetching
+   * Internally handles token fetch errors.
+   * @param tokenError - The error that occurred during token fetching
    */
-  const handleTokenError = useCallback(
-    (error: unknown) => {
-      const tokenErrror = {
-        message: "Failed to generate token",
-        error,
-      } as const;
-      setError(tokenErrror);
+  const internallyHandleTokenFetchErrors = useCallback(
+    (error: TokenError) => {
+      setError(error);
       setTokenFetchState("ERROR");
       setToken(undefined);
-      if (onFetchTokenError) {
-        onFetchTokenError(tokenErrror);
-      }
     },
-    [setError, onFetchTokenError, setTokenFetchState],
+    [setError, setTokenFetchState, setToken],
   );
 
   /**
-   * Generates a new token and schedules the next token generation.
+   * Fetches a new token and does the necessary state updates.
+   * @param fetchToken - The async function that fetches a new token
    */
-  const generateToken = useCallback(async () => {
-    try {
+  const processTokenFetch = useCallback(
+    async (fetchToken: () => Promise<WealthSweetToken>) => {
       setTokenFetchState("FETCHING");
       const token = await fetchToken();
       setToken(token);
       setError(undefined);
       setTokenFetchState("FETCHED");
-    } catch (e) {
-      handleTokenError(e);
-    }
-  }, [setToken, setError, fetchToken, setTokenFetchState, handleTokenError]);
+      return token;
+    },
+    [setTokenFetchState, setToken, setError],
+  );
 
   /**
    * Sets the forceRefetchState to true, eventually triggering a token refetch.
@@ -125,6 +119,40 @@ export function TokenProvider({
   }, [setShouldForceRefetch]);
 
   /**
+   * Generates a new token and handles any errors that occur during token generation.
+   * This function will be re-created if the fetchToken or onFetchTokenError function changes, and so possibly updates every render cycle.
+   * As a result of this, be careful using this as a dependency in useEffect or useCallback hooks, as it may cause unnecessary re-renders.
+   */
+  const generateToken = useCallback(async () => {
+    try {
+      const { expires } = await processTokenFetch(fetchToken);
+      if (tokenTimeout.current !== undefined) {
+        clearTimeout(tokenTimeout.current);
+      }
+      // One minute before this token expires, fetch a new token
+      tokenTimeout.current = setTimeout(
+        forceRefetch,
+        expires - new Date().getTime() - ONE_MINUTE,
+      );
+    } catch (error) {
+      const tokenErrror = {
+        message: "Failed to generate token",
+        error,
+      } as const;
+      internallyHandleTokenFetchErrors(tokenErrror);
+      if (onFetchTokenError) {
+        onFetchTokenError(tokenErrror);
+      }
+    }
+  }, [
+    processTokenFetch,
+    forceRefetch,
+    internallyHandleTokenFetchErrors,
+    fetchToken,
+    onFetchTokenError,
+  ]);
+
+  /*
    * Listens for forceRefetchState state changes and triggers a token refetch if necessary.
    */
   useEffect(() => {
@@ -132,31 +160,34 @@ export function TokenProvider({
       void generateToken();
       setShouldForceRefetch(false);
     }
-  }, [shouldForceRefetch, setShouldForceRefetch, generateToken]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [shouldForceRefetch, setShouldForceRefetch]);
 
   /**
    * Manages token generation and refresh.
+   * This will run once when the component mounts, and will run again if the generateToken function changes, potentially every render cycle.
+   * Since this only does something when the token is not set and the tokenFetchState is INITIALISED, it should not cause unnecessary re-renders.
+   * The token should always be set after the first render that the generateToken function succeeds.
+   * All other token updates are done through the forceRefetch function, or the tokenTimeout.
    */
   useEffect(() => {
-    if (token) {
-      if (tokenTimeout.current !== undefined) {
-        clearTimeout(tokenTimeout.current);
-      }
-      // One minute before this token expires, fetch a new token
-      tokenTimeout.current = setTimeout(
-        generateToken,
-        token.expires - new Date().getTime() - ONE_MINUTE,
-      );
-    } else {
+    if (!token && tokenFetchState === "INITIALISED") {
       void generateToken();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-    return () => {
+  /**
+   * When unmounting, clear the token timeout.
+   */
+  useEffect(
+    () => () => {
       if (tokenTimeout.current !== undefined) {
         clearTimeout(tokenTimeout.current);
       }
-    };
-  }, [generateToken, token]);
+    },
+    [],
+  );
 
   return (
     <TokenContext.Provider
