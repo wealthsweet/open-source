@@ -34,7 +34,7 @@ export const createContextAndHook = <CtxVal>(
   UseCtxFn<CtxVal & { contextLoaded: true }>,
   UseCtxFn<[true, CtxVal] | [false, null]>,
 ] => {
-  const { assertCtxFn = assertContextExists } = options || {};
+  const { assertCtxFn = assertContextExists } = options ?? {};
   const Ctx = createContext<{ value: CtxVal } | undefined>(undefined);
   Ctx.displayName = displayName;
 

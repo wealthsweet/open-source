@@ -2,13 +2,20 @@
   "name": "@wealthsweet/embed-react",
   "version": "1.1.2",
   "devDependencies": {
+    "@eslint/compat": "^1.2.7",
+    "@eslint/eslintrc": "^3.3.0",
+    "@eslint/js": "^9.13.0",
     "@types/react": "*",
     "@wealthsweet/embed-message-api": "workspace:*",
     "@wealthsweet/http-apis": "workspace:*",
     "eslint": "^9.13.0",
+    "eslint-plugin-react": "^7.37.4",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "globals": "^16.0.0",
     "prettier": "^3.3.3",
     "tsup": "^8.2.4",
-    "typescript": "5.5.4"
+    "typescript": "5.5.4",
+    "typescript-eslint": "^8.25.0"
   },
   "files": [
     "dist/**"
