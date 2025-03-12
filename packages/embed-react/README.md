@@ -73,8 +73,7 @@ export default function EmbeddedPerformanceIFrame({
 
 The context will call the provided callback function before the token expires to get a new token and update the `performanceUrl` automatically.
 
-In a situation where you have updated the `fetchToken` function or want to refetch the token before the current token expires, the `TokenProvider` exposes a `refetchToken` function that can be called which will run the fetch token functionality and update the context state.
-
+The `refetchToken` function that is exposed from the `TokenProvider` refetches the token on the next render, even if the current token has not expired. You may want to do this when the `fetchToken` function is updated to a different user context.
 ### Approach 2: Standalone React Hook
 
 If you would like to handle the state management of the token yourself then the hook can be used standalone as shown below:
