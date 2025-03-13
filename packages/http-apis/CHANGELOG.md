@@ -1,5 +1,11 @@
 # @wealthsweet/http-apis
 
+## 1.2.0
+
+### Minor Changes
+
+- c8ea314: Allow nodes to be optional for the generate token request
+
 ## 1.1.0
 
 ### Minor Changes
