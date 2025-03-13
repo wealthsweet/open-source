@@ -19,11 +19,17 @@ export function chooseHookParamElseContextParam<TParam>(
   } else if (contextLoaded && contextParam) {
     return contextParam;
   } else {
+    const hookParamString =
+      typeof hookParam === "string" ? hookParam : JSON.stringify(hookParam);
+    const contextParamString =
+      typeof contextParam === "string"
+        ? contextParam
+        : JSON.stringify(contextParam);
     console.error(
       `
       Choosing hook and token param failed.\n
-        hookParam: ${hookParam}\n
-        contextParam: ${contextParam}\n
+        hookParam: ${hookParamString}\n
+        contextParam: ${contextParamString}\n
         contextLoaded: ${contextLoaded}\n
         error: ${error}
       `,

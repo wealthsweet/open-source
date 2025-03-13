@@ -1,6 +1,5 @@
 # `@wealthsweet/embed-react`
 
-
 ## Installation
 
 The fastest way to use WealthSweet is to simply install with your package manager of choice.
@@ -74,6 +73,7 @@ export default function EmbeddedPerformanceIFrame({
 
 The context will call the provided callback function before the token expires to get a new token and update the `performanceUrl` automatically.
 
+The `refetchToken` function that is exposed from the `TokenProvider` refetches the token on the next render, even if the current token has not expired. You may want to do this when the `fetchToken` function is updated to a different user context.
 ### Approach 2: Standalone React Hook
 
 If you would like to handle the state management of the token yourself then the hook can be used standalone as shown below:
@@ -165,7 +165,7 @@ The `useIdleStatus` hook is a convenient wrapper around the `useWealthSweetMessa
 | Parameter | Description |
 | --- | --- |
 | `origin`: object | The origin server you expect messages to be coming from (AKA the same server the iframe is loaded from). <br> Specifies a host and a protocol to distinguish between different instances of the WealthSweet service. <br> <ul> <li>protocol: Defaults to https and should not need to be configured</li><li>host: Set to staging.performance.wealthsweet.com for testing purposes and performance.wealthsweet.com in production</li></ul> |
-| `timeout`: number | A timeout in `ms`  for how long to wait until this hook reports a status of `isIidle = true`. <br> The default for `timeout` is 10 minutes |
+| `timeout`: number | A timeout in `ms` for how long to wait until this hook reports a status of `isIidle = true`. <br> The default for `timeout` is 10 minutes |
 | `onIdle`: () => void | A callback that executes after a user has been idle for `timeout` ms. |
 | `onAction`: () => void | A callback that executes when a user event occurs (based on the `onUserEvent` callback function). |
 
