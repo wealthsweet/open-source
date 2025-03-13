@@ -1,5 +1,11 @@
 # @wealthsweet/embed-react
 
+## 1.2.0
+
+### Minor Changes
+
+- c995d87: Add token refetch functionality to token provider, introduce linting, and update readme
+
 ## 1.1.2
 
 ### Patch Changes
