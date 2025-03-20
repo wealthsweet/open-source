@@ -112,7 +112,7 @@ export function createPerformanceSwaggerFile(): oas31.OpenAPIObject {
   return createDocument({
     openapi: "3.1.0",
     info: {
-      version: "1.2.0",
+      version: "1.1.0",
       title: "Wealthsweet Performance API",
       description:
         "This is the wealthsweet performance API based on the OpenAPI 3.1 specification",
