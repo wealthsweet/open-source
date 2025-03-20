@@ -105,6 +105,7 @@ export const serviceHealthResponse = z.object({
   api: serviceHealth,
   database: serviceHealth,
   pubStorage: serviceHealth,
+  azure: serviceHealth.openapi({ deprecated: true }),
 });
 
 export function createPerformanceSwaggerFile(): oas31.OpenAPIObject {
