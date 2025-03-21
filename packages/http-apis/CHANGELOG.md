@@ -1,5 +1,11 @@
 # @wealthsweet/http-apis
 
+## 1.3.0
+
+### Minor Changes
+
+- df80b47: Add the pubStorage field and deprecate the azure field from the healthcheck api to enforce better encapsulation
+
 ## 1.2.0
 
 ### Minor Changes
