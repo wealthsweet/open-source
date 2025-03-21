@@ -104,14 +104,15 @@ export const serviceHealth = z.object({
 export const serviceHealthResponse = z.object({
   api: serviceHealth,
   database: serviceHealth,
-  azure: serviceHealth,
+  pubStorage: serviceHealth,
+  azure: serviceHealth.openapi({ deprecated: true }),
 });
 
 export function createPerformanceSwaggerFile(): oas31.OpenAPIObject {
   return createDocument({
     openapi: "3.1.0",
     info: {
-      version: "0.1.0",
+      version: "1.1.0",
       title: "Wealthsweet Performance API",
       description:
         "This is the wealthsweet performance API based on the OpenAPI 3.1 specification",
