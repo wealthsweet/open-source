@@ -2,8 +2,10 @@ import { z } from "zod";
 
 const commonFieldsSchema = z.object({
   messageTime: z.number(),
+  message: z.string().optional(),
 });
-type CommonEmbedMessageFields = { messageTime: number };
+
+type CommonEmbedMessageFields = { messageTime: number; message?: string };
 
 const initialisingSchema = z
   .object({
@@ -68,10 +70,12 @@ export type UserIdleEmbedMessage = {
 const errorSchema = z
   .object({
     type: z.literal("ERROR"),
+    errorDigest: z.string().optional(),
   })
   .merge(commonFieldsSchema);
 export type ErrorEmbedMessage = {
   type: "ERROR";
+  errorDigest?: string;
 } & CommonEmbedMessageFields;
 
 export const embedMessageSchema = z.discriminatedUnion("type", [
