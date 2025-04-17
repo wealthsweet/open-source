@@ -1,5 +1,11 @@
 # @wealthsweet/embed-message-api
 
+## 1.1.0
+
+### Minor Changes
+
+- 4098c42: Extend message API schema to include optional message and errorDigest field
+
 ## 1.0.0
 
 ### Major Changes
