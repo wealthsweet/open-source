@@ -1,5 +1,11 @@
 # @wealthsweet/embed-react
 
+## 1.2.1
+
+### Patch Changes
+
+- df3ee16: Release new version of embed-react to get new embed-message-api changes
+
 ## 1.2.0
 
 ### Minor Changes
