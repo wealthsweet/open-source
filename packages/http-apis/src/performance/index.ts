@@ -1,7 +1,6 @@
 import type { oas31 } from "openapi3-ts";
-import { z } from "zod";
 import { createDocument } from "zod-openapi";
-import "zod-openapi/extend";
+import { z } from "zod/v4";
 import { errorResponse } from "../utils";
 
 const invalidExpiresMessage = {
@@ -11,17 +10,17 @@ const invalidExpiresMessage = {
 
 export const generateAuthTokenRequestBody = z.object({
   clientId: z.string(),
-  clientSecret: z.string().openapi({
+  clientSecret: z.string().meta({
     example: "17bd3fbcda124f7292445d3ab1c1c417",
   }),
-  brandingId: z.string().optional().openapi({
+  brandingId: z.string().optional().meta({
     description:
       "The identifier of the branding to use. If not provided, the default client branding will be used.",
   }),
-  expires: z.coerce.number().min(0, invalidExpiresMessage).nullable().openapi({
+  expires: z.coerce.number().min(0, invalidExpiresMessage).nullable().meta({
     description: "The UTC timestamp at which this token will expire",
   }),
-  session: z.string().openapi({
+  session: z.string().meta({
     description: `A unique reference for a session to scope this signature to. 
     For instance the session ref may be derived from a user id such that multiple tokens can access the same session.
     Or a different session ref may be issued for the same nodeRefs to sidestep any existing caches.`,
@@ -30,7 +29,7 @@ export const generateAuthTokenRequestBody = z.object({
   nodes: z
     .array(z.string())
     .optional()
-    .openapi({
+    .meta({
       description:
         "A list of references to nodes that this user has access to. If not provided, nodes will not be included in the generated token.",
       example: ["node-1", "node-2"],
@@ -42,32 +41,32 @@ export const generateAuthTokenRequestBody = z.object({
 });
 
 export const generateAuthTokenResponse = z.object({
-  token: z.string().openapi({
+  token: z.string().meta({
     description: "Authorisation token",
   }),
 });
 
 export const embedRequestParams = z.object({
-  token: z.string().openapi({
+  token: z.string().meta({
     description: "The access token for this embedded context",
     example: "pk_test_TOKEN",
   }),
-  from: z.string().date().optional().openapi({
+  from: z.iso.date().optional().meta({
     description: "The date to report performance calcs from",
     example: "2020-01-01",
   }),
-  to: z.string().date().optional().openapi({
+  to: z.iso.date().optional().meta({
     description: "The date to report performance calcs to",
     example: "2021-01-01",
   }),
-  currencyIsoCode: z.string().min(3).max(3).optional().openapi({
+  currencyIsoCode: z.string().min(3).max(3).optional().meta({
     description: "The currency iso code to report performance in",
     example: "GBP",
   }),
   investorExtRefs: z
     .array(z.string())
     .optional()
-    .openapi({
+    .meta({
       description: "A list of investor references to calculate performance for",
       example: ["inv-1", "inv-2"],
       items: {
@@ -78,7 +77,7 @@ export const embedRequestParams = z.object({
   investorAccountExtRefs: z
     .array(z.string())
     .optional()
-    .openapi({
+    .meta({
       description:
         "A list of investor account references to calculate performance for",
       example: ["inv-acc-1", "inv-acc-2"],
@@ -90,13 +89,13 @@ export const embedRequestParams = z.object({
 });
 
 export const serviceHealth = z.object({
-  health: z.enum(["Healthy", "Unhealthy"]).openapi({
+  health: z.enum(["Healthy", "Unhealthy"]).meta({
     description: "The health of the service",
   }),
-  message: z.string().optional().openapi({
+  message: z.string().optional().meta({
     description: "A message relating to the health of a service",
   }),
-  error: z.string().optional().openapi({
+  error: z.string().optional().meta({
     description: "The error associated with with an unhealthy service",
   }),
 });
@@ -105,7 +104,7 @@ export const serviceHealthResponse = z.object({
   api: serviceHealth,
   database: serviceHealth,
   pubStorage: serviceHealth,
-  azure: serviceHealth.openapi({ deprecated: true }),
+  azure: serviceHealth.meta({ deprecated: true }),
 });
 
 export function createPerformanceSwaggerFile(): oas31.OpenAPIObject {
