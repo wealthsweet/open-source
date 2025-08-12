@@ -1,5 +1,11 @@
 # @wealthsweet/embed-react
 
+## 1.2.2
+
+### Patch Changes
+
+- c794c04: Update dependencies for embed-message-api, embed-react, http-apis
+
 ## 1.2.1
 
 ### Patch Changes

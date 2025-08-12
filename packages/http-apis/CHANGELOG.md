@@ -1,5 +1,11 @@
 # @wealthsweet/http-apis
 
+## 1.3.1
+
+### Patch Changes
+
+- c794c04: Update dependencies for embed-message-api, embed-react, http-apis
+
 ## 1.3.0
 
 ### Minor Changes
