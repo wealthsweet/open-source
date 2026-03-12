@@ -98,7 +98,6 @@ export function useWealthsweetMessages({
 
   useEffect(() => {
     window.addEventListener("message", handleMessage);
-    setIsListeningToMessages("LISTENING");
     return () => {
       setIsListeningToMessages("UNMOUNTED");
       window.removeEventListener("message", handleMessage);

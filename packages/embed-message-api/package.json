@@ -2,13 +2,13 @@
   "name": "@wealthsweet/embed-message-api",
   "version": "1.1.1",
   "dependencies": {
-    "zod": "^4.0.15"
+    "zod": "^4.3.6"
   },
   "devDependencies": {
-    "eslint": "^9.32.0",
-    "prettier": "^3.6.2",
-    "tsup": "^8.5.0",
-    "typescript": "5.9.2"
+    "eslint": "^10.0.3",
+    "prettier": "^3.8.1",
+    "tsup": "^8.5.1",
+    "typescript": "5.9.3"
   },
   "files": [
     "dist/**"
