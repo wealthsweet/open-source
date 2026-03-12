@@ -1,5 +1,11 @@
 # @wealthsweet/embed-message-api
 
+## 1.1.2
+
+### Patch Changes
+
+- 5117454: Update dependencies to latest versions
+
 ## 1.1.1
 
 ### Patch Changes

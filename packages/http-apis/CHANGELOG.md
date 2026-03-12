@@ -1,5 +1,11 @@
 # @wealthsweet/http-apis
 
+## 1.3.2
+
+### Patch Changes
+
+- 5117454: Update dependencies to latest versions
+
 ## 1.3.1
 
 ### Patch Changes
