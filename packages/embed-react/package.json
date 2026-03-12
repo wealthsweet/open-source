@@ -1,6 +1,6 @@
 {
   "name": "@wealthsweet/embed-react",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "devDependencies": {
     "@eslint/compat": "^2.0.3",
     "@eslint/eslintrc": "^3.3.5",

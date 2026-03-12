@@ -1,5 +1,11 @@
 # @wealthsweet/embed-react
 
+## 1.2.3
+
+### Patch Changes
+
+- 5117454: Update dependencies to latest versions
+
 ## 1.2.2
 
 ### Patch Changes
