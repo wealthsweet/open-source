@@ -22,11 +22,11 @@ This monorepo contains everything you need to embed WealthSweet's investment per
 
 ## Packages
 
-| Package | Description | npm |
-|---------|-------------|-----|
-| [`@wealthsweet/embed-react`](./packages/embed-react) | React SDK for embedding WealthSweet components | [![npm](https://img.shields.io/npm/v/@wealthsweet/embed-react)](https://www.npmjs.com/package/@wealthsweet/embed-react) |
-| [`@wealthsweet/http-apis`](./packages/http-apis) | TypeScript types, Zod schemas, and OpenAPI spec for WealthSweet APIs | [![npm](https://img.shields.io/npm/v/@wealthsweet/http-apis)](https://www.npmjs.com/package/@wealthsweet/http-apis) |
-| [`@wealthsweet/embed-message-api`](./packages/embed-message-api) | Message types and schemas for iframe `postMessage` communication | [![npm](https://img.shields.io/npm/v/@wealthsweet/embed-message-api)](https://www.npmjs.com/package/@wealthsweet/embed-message-api) |
+| Package                                                          | Description                                                          | npm                                                                                                                                 |
+| ---------------------------------------------------------------- | -------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| [`@wealthsweet/embed-react`](./packages/embed-react)             | React SDK for embedding WealthSweet components                       | [![npm](https://img.shields.io/npm/v/@wealthsweet/embed-react)](https://www.npmjs.com/package/@wealthsweet/embed-react)             |
+| [`@wealthsweet/http-apis`](./packages/http-apis)                 | TypeScript types, Zod schemas, and OpenAPI spec for WealthSweet APIs | [![npm](https://img.shields.io/npm/v/@wealthsweet/http-apis)](https://www.npmjs.com/package/@wealthsweet/http-apis)                 |
+| [`@wealthsweet/embed-message-api`](./packages/embed-message-api) | Message types and schemas for iframe `postMessage` communication     | [![npm](https://img.shields.io/npm/v/@wealthsweet/embed-message-api)](https://www.npmjs.com/package/@wealthsweet/embed-message-api) |
 
 ---
 
@@ -36,7 +36,7 @@ This monorepo contains everything you need to embed WealthSweet's investment per
 
 - Node.js v20+
 - React 18 or 19 (for the React SDK)
-- A WealthSweet `clientId` and `clientSecret` (contact WealthSweet to obtain credentials)
+- A WealthSweet `clientId` and `clientSecret` (Can be setup by an Admin user of your organisation in WealthSweet)
 
 ### Installation
 
@@ -104,7 +104,9 @@ export default function PerformancePage() {
 
   if (!isTokenLoaded) return <div>Loading...</div>;
 
-  return <iframe src={performanceUrl} style={{ width: "100%", height: 1000 }} />;
+  return (
+    <iframe src={performanceUrl} style={{ width: "100%", height: 1000 }} />
+  );
 }
 ```
 
@@ -138,7 +140,9 @@ export default function PerformancePage({ token }: { token: string }) {
 
   if (!isTokenLoaded) return <div>Loading...</div>;
 
-  return <iframe src={performanceUrl} style={{ width: "100%", height: 1000 }} />;
+  return (
+    <iframe src={performanceUrl} style={{ width: "100%", height: 1000 }} />
+  );
 }
 ```
 
@@ -192,15 +196,15 @@ useWealthsweetMessages({
 
 **Message types:**
 
-| Type | Description | Extra Fields |
-|------|-------------|--------------|
-| `INITIALISING` | Embed has started loading | - |
-| `INITIALISING_DONE` | Embed finished loading | - |
-| `RENDERING` | Embed is rendering content | - |
-| `RENDERING_DONE` | Embed finished rendering | - |
-| `USER_EVENT` | User interacted with the embed (throttled to 1/sec) | `userEventTime` |
-| `USER_IDLE` | User has been inactive for 1 second | `lastActiveTime` |
-| `ERROR` | An error occurred in the embed | `errorDigest` |
+| Type                | Description                                         | Extra Fields     |
+| ------------------- | --------------------------------------------------- | ---------------- |
+| `INITIALISING`      | Embed has started loading                           | -                |
+| `INITIALISING_DONE` | Embed finished loading                              | -                |
+| `RENDERING`         | Embed is rendering content                          | -                |
+| `RENDERING_DONE`    | Embed finished rendering                            | -                |
+| `USER_EVENT`        | User interacted with the embed (throttled to 1/sec) | `userEventTime`  |
+| `USER_IDLE`         | User has been inactive for 1 second                 | `lastActiveTime` |
+| `ERROR`             | An error occurred in the embed                      | `errorDigest`    |
 
 All messages include `messageTime` (timestamp) and an optional `message` string.
 
@@ -219,12 +223,12 @@ const { isIdle, lastActiveTime } = useWealthsweetIdleStatus({
 });
 ```
 
-| Parameter | Description |
-|-----------|-------------|
-| `origin` | The WealthSweet server origin to validate messages against |
-| `timeout` | Idle threshold in milliseconds (default: 10 minutes) |
-| `onIdle` | Callback fired when the user has been idle for `timeout` ms |
-| `onAction` | Callback fired when the user becomes active again |
+| Parameter  | Description                                                 |
+| ---------- | ----------------------------------------------------------- |
+| `origin`   | The WealthSweet server origin to validate messages against  |
+| `timeout`  | Idle threshold in milliseconds (default: 10 minutes)        |
+| `onIdle`   | Callback fired when the user has been idle for `timeout` ms |
+| `onAction` | Callback fired when the user becomes active again           |
 
 Returns `isIdle` (boolean) and `lastActiveTime` (Unix timestamp in ms).
 
@@ -260,39 +264,41 @@ const parsed = generateAuthTokenRequestBody.parse({
 import type { paths, operations } from "@wealthsweet/http-apis/performance/api";
 
 // Use with any OpenAPI-compatible client (e.g., openapi-fetch)
-type TokenRequest = operations["token"]["requestBody"]["content"]["application/json"];
-type TokenResponse = operations["token"]["responses"]["200"]["content"]["application/json"];
+type TokenRequest =
+  operations["token"]["requestBody"]["content"]["application/json"];
+type TokenResponse =
+  operations["token"]["responses"]["200"]["content"]["application/json"];
 ```
 
 #### API Endpoints
 
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/api/auth/token` | Generate an authentication token using your `clientId` and `clientSecret` |
-| `GET` | `/api/health` | Check the health of WealthSweet services |
-| `GET` | `/embed/pages/performance` | Load the embedded performance page (used as iframe `src`) |
+| Method | Path                       | Description                                                               |
+| ------ | -------------------------- | ------------------------------------------------------------------------- |
+| `POST` | `/api/auth/token`          | Generate an authentication token using your `clientId` and `clientSecret` |
+| `GET`  | `/api/health`              | Check the health of WealthSweet services                                  |
+| `GET`  | `/embed/pages/performance` | Load the embedded performance page (used as iframe `src`)                 |
 
 **Token request parameters:**
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `clientId` | `string` | Yes | Your client identifier |
-| `clientSecret` | `string` | Yes | Your client secret |
-| `expires` | `number \| null` | Yes | UTC timestamp when the token expires |
-| `session` | `string` | Yes | Session reference for scoping access |
-| `brandingId` | `string` | No | Custom branding identifier |
-| `nodes` | `string[]` | No | Node references the token grants access to |
+| Field          | Type             | Required | Description                                |
+| -------------- | ---------------- | -------- | ------------------------------------------ |
+| `clientId`     | `string`         | Yes      | Your client identifier                     |
+| `clientSecret` | `string`         | Yes      | Your client secret                         |
+| `expires`      | `number \| null` | Yes      | UTC timestamp when the token expires       |
+| `session`      | `string`         | Yes      | Session reference for scoping access       |
+| `brandingId`   | `string`         | No       | Custom branding identifier                 |
+| `nodes`        | `string[]`       | No       | Node references the token grants access to |
 
 **Embed query parameters:**
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `token` | `string` | Yes | Access token |
-| `from` | `ISO 8601 date` | No | Report period start |
-| `to` | `ISO 8601 date` | No | Report period end |
-| `currencyIsoCode` | `string` | No | 3-letter currency code (e.g., `GBP`) |
-| `investorExtRefs` | `string[]` | No | Investor references to filter by |
-| `investorAccountExtRefs` | `string[]` | No | Account references to filter by |
+| Field                    | Type            | Required | Description                          |
+| ------------------------ | --------------- | -------- | ------------------------------------ |
+| `token`                  | `string`        | Yes      | Access token                         |
+| `from`                   | `ISO 8601 date` | No       | Report period start                  |
+| `to`                     | `ISO 8601 date` | No       | Report period end                    |
+| `currencyIsoCode`        | `string`        | No       | 3-letter currency code (e.g., `GBP`) |
+| `investorExtRefs`        | `string[]`      | No       | Investor references to filter by     |
+| `investorAccountExtRefs` | `string[]`      | No       | Account references to filter by      |
 
 ---
 
@@ -331,10 +337,10 @@ window.addEventListener("message", (event) => {
 
 ## Environments
 
-| Environment | Host |
-|------------|------|
-| Production | `performance.wealthsweet.com` |
-| Staging | `staging.performance.wealthsweet.com` |
+| Environment | Host                                  |
+| ----------- | ------------------------------------- |
+| Production  | `performance.wealthsweet.com`         |
+| Staging     | `staging.performance.wealthsweet.com` |
 
 ---
 
@@ -350,16 +356,16 @@ pnpm install
 
 ### Commands
 
-| Command | Description |
-|---------|-------------|
-| `pnpm build` | Build all packages |
-| `pnpm lint` | Lint all packages |
-| `pnpm typecheck` | Type-check all packages |
-| `pnpm format` | Format all files with Prettier |
-| `pnpm clean` | Remove build artifacts and lock file |
-| `pnpm clean:full` | Full clean including `node_modules` |
-| `pnpm deps` | List dependency version mismatches |
-| `pnpm deps:fix` | Auto-fix dependency version mismatches |
+| Command           | Description                            |
+| ----------------- | -------------------------------------- |
+| `pnpm build`      | Build all packages                     |
+| `pnpm lint`       | Lint all packages                      |
+| `pnpm typecheck`  | Type-check all packages                |
+| `pnpm format`     | Format all files with Prettier         |
+| `pnpm clean`      | Remove build artifacts and lock file   |
+| `pnpm clean:full` | Full clean including `node_modules`    |
+| `pnpm deps`       | List dependency version mismatches     |
+| `pnpm deps:fix`   | Auto-fix dependency version mismatches |
 
 ### Releasing
 
