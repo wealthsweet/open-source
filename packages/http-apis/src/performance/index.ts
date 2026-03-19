@@ -127,9 +127,9 @@ export const embedRequestParams = z.object({
         examples: ["inv-acc-1"],
       },
     }),
-  brandingConfiguration: optionalBrandingConfigSchema.optional().meta({
+  brandingConfiguration: z.string().optional().meta({
     description:
-      "An optional configuration object to customise the appearance of the embedded performance page",
+      "A base64 encoded JSON string of the branding configuration object to customise the appearance of the embedded performance page",
   }),
 });
 

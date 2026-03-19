@@ -21,7 +21,7 @@ function convertToUrlParams(
   return Object.fromEntries(
     Object.entries(queryParams).map(([key, value]) => {
       if (typeof value === "object") {
-        return [key, JSON.stringify(value)] satisfies [
+        return [key, btoa(JSON.stringify(value))] satisfies [
           string,
           string | string[] | null | undefined,
         ];
