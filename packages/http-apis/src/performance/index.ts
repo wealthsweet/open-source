@@ -72,6 +72,15 @@ export const optionalBrandingConfigSchema = z.object({
   secondaryForegroundColor: brandingColor.optional(),
   callToActionColor: brandingColor.optional(),
   callToActionForegroundColor: brandingColor.optional(),
+  pdfBalanceColor: brandingColor.optional(),
+  pdfTimeWeightedPerformanceColor: brandingColor.optional(),
+  pdfMoneyWeightedPerformanceColor: brandingColor.optional(),
+  pdfPositiveCapitalMovementColor: brandingColor.optional(),
+  pdfNegativeCapitalMovementColor: brandingColor.optional(),
+  pdfTextColor: brandingColor.optional(),
+  pdfBannerColor: brandingColor.optional(),
+  pdfPageColor: brandingColor.optional(),
+  pdfBannerContrastColor: brandingColor.optional(),
   fontFamily: SELECTABLE_FONTS_ENUM.optional(),
   logoUrl: z.string().optional(),
 });
@@ -127,10 +136,14 @@ export const embedRequestParams = z.object({
         examples: ["inv-acc-1"],
       },
     }),
-  brandingConfiguration: z.string().optional().meta({
-    description:
-      "A base64 encoded JSON string of the branding configuration object to customise the appearance of the embedded performance page",
-  }),
+  brandingConfiguration: z
+    .string()
+    .optional()
+    .meta({
+      description:
+        "A base64 encoded JSON string of the branding configuration object to customise the appearance of the embedded performance page",
+      examples: ["eyJwcmltYXJ5Q29sb3IiOiIjRmZkMDAwIn0K"], // base64 encoded {"primaryColor":"#Ffd000"}
+    }),
 });
 
 export const serviceHealth = z.object({
@@ -284,6 +297,36 @@ export function createPerformanceSwaggerFile(): oas31.OpenAPIObject {
         errorResponse,
         serviceHealth,
         serviceHealthResponse,
+      },
+      examples: {
+        brandingConfigExample: {
+          summary:
+            "Example branding configuration. Note this is a base64 encoded JSON string with the following structure.",
+          value: {
+            balanceColor: "#00FF00",
+            timeWeightedPerformanceColor: "rgb(0, 255, 0)",
+            moneyWeightedPerformanceColor: "hsl(120, 100%, 50%)",
+            positiveCapitalMovementColor: "#00FF00",
+            negativeCapitalMovementColor: "#FF0000",
+            primaryColor: "hsl(120, 100%, 50%)",
+            primaryForegroundColor: "#000000",
+            secondaryColor: "#FFFFFF",
+            secondaryForegroundColor: "#000000",
+            callToActionColor: "hsl(120, 100%, 50%)",
+            callToActionForegroundColor: "#FFFFFF",
+            pdfBalanceColor: "#012345",
+            pdfTimeWeightedPerformanceColor: "#012345",
+            pdfMoneyWeightedPerformanceColor: "#012345",
+            pdfPositiveCapitalMovementColor: "#012345",
+            pdfNegativeCapitalMovementColor: "#012345",
+            pdfTextColor: "#012345",
+            pdfBannerColor: "#012345",
+            pdfPageColor: "#012345",
+            pdfBannerContrastColor: "#012345",
+            fontFamily: "Inter",
+            logoUrl: "https://example.com/logo.png",
+          },
+        },
       },
     },
   });

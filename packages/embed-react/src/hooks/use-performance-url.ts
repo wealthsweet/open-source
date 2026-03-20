@@ -1,3 +1,4 @@
+import { BrandingConfiguration } from "@wealthsweet/http-apis/performance/zod";
 import { useOriginContextWithoutGuarantee } from "src/contexts/origin-context";
 import {
   generateWealthSweetElementUrl,
@@ -33,6 +34,7 @@ export function usePerformanceUrl({
 }: Partial<
   WealthSweetPerforamnceElementQueryParams & {
     origin: WealthSweetElementOrigin;
+    brandingConfiguration: BrandingConfiguration;
   }
 >) {
   const [tokenContextLoaded, tokenContext] = useTokenContextWithoutGuarantee();

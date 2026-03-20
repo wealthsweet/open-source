@@ -1,3 +1,4 @@
+import { BrandingConfiguration } from "@wealthsweet/http-apis/performance/zod";
 import {
   buildSrcProperty,
   serialiseURLSearchParams,
@@ -16,11 +17,16 @@ export type WealthSweetElementURLParams = {
 } & WealthSweetElement;
 
 function convertToUrlParams(
-  queryParams: WealthSweetPerforamnceElementQueryParams,
+  queryParams: Omit<
+    WealthSweetPerforamnceElementQueryParams,
+    "brandingConfiguration"
+  > & {
+    brandingConfiguration?: BrandingConfiguration;
+  },
 ): Record<string, string | string[] | null | undefined> {
   return Object.fromEntries(
     Object.entries(queryParams).map(([key, value]) => {
-      if (typeof value === "object") {
+      if (typeof value === "object" && value !== null) {
         return [key, btoa(JSON.stringify(value))] satisfies [
           string,
           string | string[] | null | undefined,
@@ -38,11 +44,16 @@ export function generateWealthSweetElementUrl({
   origin: { protocol, host },
   path,
   params,
-}: WealthSweetElementURLParams) {
+  brandingConfiguration,
+}: WealthSweetElementURLParams & {
+  brandingConfiguration?: BrandingConfiguration;
+}) {
   return buildSrcProperty({
     host,
     protocol,
     path,
-    params: serialiseURLSearchParams(convertToUrlParams(params)),
+    params: serialiseURLSearchParams(
+      convertToUrlParams({ ...params, brandingConfiguration }),
+    ),
   });
 }
