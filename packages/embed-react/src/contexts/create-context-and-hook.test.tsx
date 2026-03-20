@@ -72,7 +72,9 @@ describe("createContextAndHook", () => {
         );
       }
 
-      const { result } = renderHook(() => useCtxWithout(), { wrapper: Wrapper });
+      const { result } = renderHook(() => useCtxWithout(), {
+        wrapper: Wrapper,
+      });
       expect(result.current[0]).toBe(true);
       expect(result.current[1]).toEqual({ name: "test" });
     });
