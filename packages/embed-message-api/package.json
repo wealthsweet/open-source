@@ -23,7 +23,9 @@
     "build": "tsup",
     "clean": "rm -r dist coverage .tsup || true",
     "clean:full": "rm -r dist coverage node_modules .turbo .tsup || true",
-    "lint": "eslint . && prettier -c src/"
+    "lint": "eslint . && prettier -c src/",
+    "test": "vitest --run",
+    "test:coverage": "vitest --run --coverage.enabled"
   },
   "type": "module",
   "types": "dist/index.d.ts"

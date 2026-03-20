@@ -36,7 +36,9 @@
     "clean:full": "rm -r dist node_modules .turbo || true",
     "gen:api": "pnpm openapi-typescript",
     "gen:swagger": "tsx ./src/generate-swagger-files",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test": "vitest --run",
+    "test:coverage": "vitest --run --coverage.enabled"
   },
   "sideEffects": false,
   "type": "module",

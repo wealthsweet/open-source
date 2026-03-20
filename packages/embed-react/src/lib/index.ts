@@ -26,7 +26,11 @@ function convertToUrlParams(
 ): Record<string, string | string[] | null | undefined> {
   return Object.fromEntries(
     Object.entries(queryParams).map(([key, value]) => {
-      if (typeof value === "object" && value !== null) {
+      if (
+        typeof value === "object" &&
+        value !== null &&
+        Array.isArray(value) === false
+      ) {
         return [key, btoa(JSON.stringify(value))] satisfies [
           string,
           string | string[] | null | undefined,
