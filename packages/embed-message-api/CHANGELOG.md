@@ -1,5 +1,15 @@
 # @wealthsweet/embed-message-api
 
+## 1.2.0
+
+### Minor Changes
+
+- fe399f7: Add the ability to provide branding overrides in the embedded api route
+
+### Patch Changes
+
+- 5117454: Update dependencies to latest versions
+
 ## 1.1.1
 
 ### Patch Changes
