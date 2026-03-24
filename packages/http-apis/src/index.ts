@@ -1,8 +1,6 @@
 import z from "zod/v4";
-import { optionalBrandingConfigSchema } from "./performance";
+import { optionalBrandingOverridesSchema } from "./performance";
 
 export * from "./performance";
 
-export type BrandingConfiguration = z.infer<
-  typeof optionalBrandingConfigSchema
->;
+export type BrandingOverrides = z.infer<typeof optionalBrandingOverridesSchema>;

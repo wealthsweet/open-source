@@ -43,26 +43,26 @@ describe("generateWealthSweetElementUrl", () => {
   });
 
   it("base64-encodes branding configuration", () => {
-    const brandingConfig = { primaryColor: "#FF0000" };
+    const brandingOverrides = { primaryColor: "#FF0000" };
     const url = generateWealthSweetElementUrl({
       origin: defaultOrigin,
       path: defaultPath,
       params: { token: "test-token" },
-      brandingConfiguration: brandingConfig,
+      brandingOverrides: brandingOverrides,
     });
-    const expectedBase64 = btoa(JSON.stringify(brandingConfig));
+    const expectedBase64 = btoa(JSON.stringify(brandingOverrides));
     expect(url).toContain(
-      `brandingConfiguration=${encodeURIComponent(expectedBase64)}`,
+      `brandingOverrides=${encodeURIComponent(expectedBase64)}`,
     );
   });
 
-  it("omits brandingConfiguration when not provided", () => {
+  it("omits brandingOverrides when not provided", () => {
     const url = generateWealthSweetElementUrl({
       origin: defaultOrigin,
       path: defaultPath,
       params: { token: "test-token" },
     });
-    expect(url).not.toContain("brandingConfiguration");
+    expect(url).not.toContain("brandingOverrides");
   });
 
   it("comma-joins array params (investorExtRefs) instead of base64-encoding", () => {

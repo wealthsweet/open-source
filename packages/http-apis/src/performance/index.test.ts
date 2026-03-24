@@ -3,7 +3,7 @@ import {
   embedRequestParams,
   generateAuthTokenRequestBody,
   generateAuthTokenResponse,
-  optionalBrandingConfigSchema,
+  optionalBrandingOverridesSchema,
   SELECTABLE_FONTS_ENUM,
   serviceHealth,
   serviceHealthResponse,
@@ -76,9 +76,9 @@ describe("generateAuthTokenResponse", () => {
   });
 });
 
-describe("optionalBrandingConfigSchema", () => {
+describe("optionalBrandingOverridesSchema", () => {
   it("parses an empty object (all fields optional)", () => {
-    const result = optionalBrandingConfigSchema.safeParse({});
+    const result = optionalBrandingOverridesSchema.safeParse({});
     expect(result.success).toBe(true);
   });
 
@@ -107,7 +107,7 @@ describe("optionalBrandingConfigSchema", () => {
       fontFamily: "Inter",
       logoUrl: "https://example.com/logo.png",
     };
-    const result = optionalBrandingConfigSchema.safeParse(config);
+    const result = optionalBrandingOverridesSchema.safeParse(config);
     expect(result.success).toBe(true);
   });
 
@@ -116,13 +116,13 @@ describe("optionalBrandingConfigSchema", () => {
       primaryColor: "#FF0000",
       fontFamily: "Roboto",
     };
-    const result = optionalBrandingConfigSchema.safeParse(config);
+    const result = optionalBrandingOverridesSchema.safeParse(config);
     expect(result.success).toBe(true);
   });
 
   it("rejects invalid fontFamily", () => {
     const config = { fontFamily: "Comic Sans" };
-    const result = optionalBrandingConfigSchema.safeParse(config);
+    const result = optionalBrandingOverridesSchema.safeParse(config);
     expect(result.success).toBe(false);
   });
 });
@@ -160,7 +160,7 @@ describe("embedRequestParams", () => {
       currencyIsoCode: "GBP",
       investorExtRefs: ["inv-1", "inv-2"],
       investorAccountExtRefs: ["inv-acc-1"],
-      brandingConfiguration: btoa(JSON.stringify({ primaryColor: "#FF0000" })),
+      brandingOverrides: btoa(JSON.stringify({ primaryColor: "#FF0000" })),
     };
     const result = embedRequestParams.safeParse(params);
     expect(result.success).toBe(true);

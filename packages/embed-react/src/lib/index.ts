@@ -1,4 +1,4 @@
-import { BrandingConfiguration } from "@wealthsweet/http-apis/performance/zod";
+import { BrandingOverrides } from "@wealthsweet/http-apis/performance/zod";
 import {
   buildSrcProperty,
   serialiseURLSearchParams,
@@ -19,9 +19,9 @@ export type WealthSweetElementURLParams = {
 function convertToUrlParams(
   queryParams: Omit<
     WealthSweetPerforamnceElementQueryParams,
-    "brandingConfiguration"
+    "brandingOverrides"
   > & {
-    brandingConfiguration?: BrandingConfiguration;
+    brandingOverrides?: BrandingOverrides;
   },
 ): Record<string, string | string[] | null | undefined> {
   return Object.fromEntries(
@@ -48,16 +48,16 @@ export function generateWealthSweetElementUrl({
   origin: { protocol, host },
   path,
   params,
-  brandingConfiguration,
+  brandingOverrides,
 }: WealthSweetElementURLParams & {
-  brandingConfiguration?: BrandingConfiguration;
+  brandingOverrides?: BrandingOverrides;
 }) {
   return buildSrcProperty({
     host,
     protocol,
     path,
     params: serialiseURLSearchParams(
-      convertToUrlParams({ ...params, brandingConfiguration }),
+      convertToUrlParams({ ...params, brandingOverrides }),
     ),
   });
 }

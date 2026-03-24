@@ -60,7 +60,7 @@ export const brandingColor = z.string().meta({
   examples: ["#ffffff", "rgb(255, 255, 255)", "hsl(0, 0%, 100%)"],
 });
 
-export const optionalBrandingConfigSchema = z.object({
+export const optionalBrandingOverridesSchema = z.object({
   balanceColor: brandingColor.optional(),
   timeWeightedPerformanceColor: brandingColor.optional(),
   moneyWeightedPerformanceColor: brandingColor.optional(),
@@ -136,7 +136,7 @@ export const embedRequestParams = z.object({
         examples: ["inv-acc-1"],
       },
     }),
-  brandingConfiguration: z
+  brandingOverrides: z
     .string()
     .optional()
     .meta({
@@ -299,7 +299,7 @@ export function createPerformanceSwaggerFile(): oas31.OpenAPIObject {
         serviceHealthResponse,
       },
       examples: {
-        brandingConfigExample: {
+        brandingOverridesExample: {
           summary:
             "Example branding configuration. Note this is a base64 encoded JSON string with the following structure.",
           value: {
