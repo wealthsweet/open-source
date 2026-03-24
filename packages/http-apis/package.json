@@ -29,7 +29,10 @@
   "publishConfig": {
     "access": "public"
   },
-  "repository": "https://github.com/wealthsweet/open-source",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wealthsweet/open-source.git"
+  },
   "scripts": {
     "build": "pnpm gen:swagger && pnpm gen:api && tsup",
     "clean": "rm -r dist || true",

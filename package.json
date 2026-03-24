@@ -11,7 +11,10 @@
     "vitest": "^2.1.9"
   },
   "packageManager": "pnpm@10.32.1",
-  "repository": "https://github.com/wealthsweet/open-source",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wealthsweet/open-source.git"
+  },
   "scripts": {
     "build": "turbo build",
     "clean": "turbo clean && rm -r .turbo pnpm-lock.yaml || true",
@@ -30,5 +33,6 @@
   "workspaces": [
     "apps/*",
     "packages/*"
-  ]
+  ],
+  "version": ""
 }
