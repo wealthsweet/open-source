@@ -2,7 +2,7 @@ import type { operations } from "@wealthsweet/http-apis/performance/api";
 
 export type PerformancePageElement = {
   path: "embed/pages/performance";
-  params: WealthSweetPerforamnceElementQueryParams;
+  params: Omit<WealthSweetPerforamnceElementQueryParams, "brandingOverrides">;
 };
 
 export type WealthSweetPerforamnceElementQueryParams = NonNullable<

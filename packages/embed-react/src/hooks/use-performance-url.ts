@@ -1,3 +1,4 @@
+import { BrandingOverrides } from "@wealthsweet/http-apis/performance/zod";
 import { useOriginContextWithoutGuarantee } from "src/contexts/origin-context";
 import {
   generateWealthSweetElementUrl,
@@ -31,8 +32,9 @@ export function usePerformanceUrl({
   origin: paramOrigin,
   ...params
 }: Partial<
-  WealthSweetPerforamnceElementQueryParams & {
+  Omit<WealthSweetPerforamnceElementQueryParams, "brandingOverrides"> & {
     origin: WealthSweetElementOrigin;
+    brandingOverrides: BrandingOverrides;
   }
 >) {
   const [tokenContextLoaded, tokenContext] = useTokenContextWithoutGuarantee();
@@ -54,7 +56,11 @@ export function usePerformanceUrl({
       performanceUrl: generateWealthSweetElementUrl({
         origin,
         path: "embed/pages/performance",
-        params: { ...params, token: paramToken },
+        params: {
+          ...params,
+          token: paramToken,
+        },
+        brandingOverrides: params.brandingOverrides,
       }),
     };
   }
@@ -89,7 +95,11 @@ export function usePerformanceUrl({
     performanceUrl: generateWealthSweetElementUrl({
       origin,
       path: "embed/pages/performance",
-      params: { ...params, token: tokenContext.token.token },
+      params: {
+        ...params,
+        token: tokenContext.token.token,
+      },
+      brandingOverrides: params.brandingOverrides,
     }),
   };
 }

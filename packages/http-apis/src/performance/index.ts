@@ -11,7 +11,7 @@ const invalidExpiresMessage = {
 export const generateAuthTokenRequestBody = z.object({
   clientId: z.string(),
   clientSecret: z.string().meta({
-    example: "17bd3fbcda124f7292445d3ab1c1c417",
+    examples: ["17bd3fbcda124f7292445d3ab1c1c417"],
   }),
   brandingId: z.string().optional().meta({
     description:
@@ -24,7 +24,7 @@ export const generateAuthTokenRequestBody = z.object({
     description: `A unique reference for a session to scope this signature to. 
     For instance the session ref may be derived from a user id such that multiple tokens can access the same session.
     Or a different session ref may be issued for the same nodeRefs to sidestep any existing caches.`,
-    example: "session-1",
+    examples: ["session-1"],
   }),
   nodes: z
     .array(z.string())
@@ -32,10 +32,10 @@ export const generateAuthTokenRequestBody = z.object({
     .meta({
       description:
         "A list of references to nodes that this user has access to. If not provided, nodes will not be included in the generated token.",
-      example: ["node-1", "node-2"],
+      examples: ["node-1", "node-2"],
       items: {
         type: "string",
-        example: ["node-1"],
+        examples: ["node-1"],
       },
     }),
 });
@@ -46,32 +46,82 @@ export const generateAuthTokenResponse = z.object({
   }),
 });
 
+export const SELECTABLE_FONTS_ENUM = z.enum([
+  "Inter",
+  "Open Sans",
+  "Roboto",
+  "Poppins",
+  "Brown Regular",
+  "Whitney Medium",
+]);
+
+export const brandingColor = z.string().meta({
+  description: "A color value to use in the embedded component",
+  examples: ["#ffffff", "rgb(255, 255, 255)", "hsl(0, 0%, 100%)"],
+});
+
+export const optionalBrandingOverridesSchema = z.object({
+  balanceColor: brandingColor.optional(),
+  timeWeightedPerformanceColor: brandingColor.optional(),
+  moneyWeightedPerformanceColor: brandingColor.optional(),
+  positiveCapitalMovementColor: brandingColor.optional(),
+  negativeCapitalMovementColor: brandingColor.optional(),
+  primaryColor: brandingColor.optional(),
+  primaryForegroundColor: brandingColor.optional(),
+  secondaryColor: brandingColor.optional(),
+  secondaryForegroundColor: brandingColor.optional(),
+  callToActionColor: brandingColor.optional(),
+  callToActionForegroundColor: brandingColor.optional(),
+  pdfBalanceColor: brandingColor.optional(),
+  pdfTimeWeightedPerformanceColor: brandingColor.optional(),
+  pdfMoneyWeightedPerformanceColor: brandingColor.optional(),
+  pdfPositiveCapitalMovementColor: brandingColor.optional(),
+  pdfNegativeCapitalMovementColor: brandingColor.optional(),
+  pdfTextColor: brandingColor.optional(),
+  pdfBannerColor: brandingColor.optional(),
+  pdfPageColor: brandingColor.optional(),
+  pdfBannerContrastColor: brandingColor.optional(),
+  fontFamily: SELECTABLE_FONTS_ENUM.optional(),
+  logoUrl: z.string().optional(),
+});
+
 export const embedRequestParams = z.object({
   token: z.string().meta({
     description: "The access token for this embedded context",
-    example: "pk_test_TOKEN",
+    examples: ["pk_test_TOKEN"],
   }),
-  from: z.iso.date().optional().meta({
-    description: "The date to report performance calcs from",
-    example: "2020-01-01",
-  }),
-  to: z.iso.date().optional().meta({
-    description: "The date to report performance calcs to",
-    example: "2021-01-01",
-  }),
-  currencyIsoCode: z.string().min(3).max(3).optional().meta({
-    description: "The currency iso code to report performance in",
-    example: "GBP",
-  }),
+  from: z.iso
+    .date()
+    .optional()
+    .meta({
+      description: "The date to report performance calcs from",
+      examples: ["2020-01-01"],
+    }),
+  to: z.iso
+    .date()
+    .optional()
+    .meta({
+      description: "The date to report performance calcs to",
+      examples: ["2021-01-01"],
+    }),
+  currencyIsoCode: z
+    .string()
+    .min(3)
+    .max(3)
+    .optional()
+    .meta({
+      description: "The currency iso code to report performance in",
+      examples: ["GBP"],
+    }),
   investorExtRefs: z
     .array(z.string())
     .optional()
     .meta({
       description: "A list of investor references to calculate performance for",
-      example: ["inv-1", "inv-2"],
+      examples: ["inv-1", "inv-2"],
       items: {
         type: "string",
-        example: ["inv-1"],
+        examples: ["inv-1"],
       },
     }),
   investorAccountExtRefs: z
@@ -80,11 +130,19 @@ export const embedRequestParams = z.object({
     .meta({
       description:
         "A list of investor account references to calculate performance for",
-      example: ["inv-acc-1", "inv-acc-2"],
+      examples: ["inv-acc-1", "inv-acc-2"],
       items: {
         type: "string",
-        example: ["inv-acc-1"],
+        examples: ["inv-acc-1"],
       },
+    }),
+  brandingOverrides: z
+    .string()
+    .optional()
+    .meta({
+      description:
+        "A base64 encoded JSON string of the branding configuration object to customise the appearance of the embedded performance page",
+      examples: ["eyJwcmltYXJ5Q29sb3IiOiIjRmZkMDAwIn0K"], // base64 encoded {"primaryColor":"#Ffd000"}
     }),
 });
 
@@ -239,6 +297,36 @@ export function createPerformanceSwaggerFile(): oas31.OpenAPIObject {
         errorResponse,
         serviceHealth,
         serviceHealthResponse,
+      },
+      examples: {
+        brandingOverridesExample: {
+          summary:
+            "Example branding configuration. Note this is a base64 encoded JSON string with the following structure.",
+          value: {
+            balanceColor: "#00FF00",
+            timeWeightedPerformanceColor: "rgb(0, 255, 0)",
+            moneyWeightedPerformanceColor: "hsl(120, 100%, 50%)",
+            positiveCapitalMovementColor: "#00FF00",
+            negativeCapitalMovementColor: "#FF0000",
+            primaryColor: "hsl(120, 100%, 50%)",
+            primaryForegroundColor: "#000000",
+            secondaryColor: "#FFFFFF",
+            secondaryForegroundColor: "#000000",
+            callToActionColor: "hsl(120, 100%, 50%)",
+            callToActionForegroundColor: "#FFFFFF",
+            pdfBalanceColor: "#012345",
+            pdfTimeWeightedPerformanceColor: "#012345",
+            pdfMoneyWeightedPerformanceColor: "#012345",
+            pdfPositiveCapitalMovementColor: "#012345",
+            pdfNegativeCapitalMovementColor: "#012345",
+            pdfTextColor: "#012345",
+            pdfBannerColor: "#012345",
+            pdfPageColor: "#012345",
+            pdfBannerContrastColor: "#012345",
+            fontFamily: "Inter",
+            logoUrl: "https://example.com/logo.png",
+          },
+        },
       },
     },
   });
