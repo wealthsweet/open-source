@@ -280,14 +280,23 @@ type TokenResponse =
 
 **Token request parameters:**
 
-| Field          | Type             | Required | Description                                |
-| -------------- | ---------------- | -------- | ------------------------------------------ |
-| `clientId`     | `string`         | Yes      | Your client identifier                     |
-| `clientSecret` | `string`         | Yes      | Your client secret                         |
-| `expires`      | `number \| null` | Yes      | UTC timestamp when the token expires       |
-| `session`      | `string`         | Yes      | Session reference for scoping access       |
-| `brandingId`   | `string`         | No       | Custom branding identifier                 |
-| `nodes`        | `string[]`       | No       | Node references the token grants access to |
+| Field              | Type               | Required | Description                                                         |
+| ------------------ | ------------------ | -------- | ------------------------------------------------------------------- |
+| `clientId`         | `string`           | Yes      | Your client identifier                                              |
+| `clientSecret`     | `string`           | Yes      | Your client secret                                                  |
+| `expires`          | `number \| null`   | Yes      | UTC timestamp when the token expires                                |
+| `session`          | `string`           | Yes      | Session reference for scoping access                                |
+| `brandingId`       | `string`           | No       | Custom branding identifier                                          |
+| `nodes`            | `string[]`         | No       | Node references the token grants access to                          |
+| `investors`        | `ExternalRef[]`    | No       | Scope the token to specific investors by external reference         |
+| `investorAccounts` | `ExternalRef[]`    | No       | Scope the token to specific investor accounts by external reference |
+
+Where `ExternalRef` is:
+
+| Field       | Type     | Description                                    |
+| ----------- | -------- | ---------------------------------------------- |
+| `system`    | `string` | The external system this reference belongs to  |
+| `reference` | `string` | The unique reference within the external system |
 
 **Embed query parameters:**
 

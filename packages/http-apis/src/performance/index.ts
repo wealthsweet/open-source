@@ -8,6 +8,17 @@ const invalidExpiresMessage = {
     "If the expires property exists it cannot have a negative expiration time",
 };
 
+const externalReference = z.object({
+  system: z.string().meta({
+    description: "The external system this reference belongs to",
+    examples: ["my-system"],
+  }),
+  reference: z.string().meta({
+    description: "The unique reference within the external system",
+    examples: ["ref-123"],
+  }),
+});
+
 export const generateAuthTokenRequestBody = z.object({
   clientId: z.string(),
   clientSecret: z.string().meta({
@@ -21,7 +32,7 @@ export const generateAuthTokenRequestBody = z.object({
     description: "The UTC timestamp at which this token will expire",
   }),
   session: z.string().meta({
-    description: `A unique reference for a session to scope this signature to. 
+    description: `A unique reference for a session to scope this signature to.
     For instance the session ref may be derived from a user id such that multiple tokens can access the same session.
     Or a different session ref may be issued for the same nodeRefs to sidestep any existing caches.`,
     examples: ["session-1"],
@@ -37,6 +48,20 @@ export const generateAuthTokenRequestBody = z.object({
         type: "string",
         examples: ["node-1"],
       },
+    }),
+  investors: z
+    .array(externalReference)
+    .optional()
+    .meta({
+      description:
+        "A list of external references identifying investors this token is scoped to. If not provided, the token is not scoped to specific investors.",
+    }),
+  investorAccounts: z
+    .array(externalReference)
+    .optional()
+    .meta({
+      description:
+        "A list of external references identifying investor accounts this token is scoped to. If not provided, the token is not scoped to specific accounts.",
     }),
 });
 
