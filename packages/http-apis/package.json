@@ -1,6 +1,6 @@
 {
   "name": "@wealthsweet/http-apis",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "devDependencies": {
     "@types/node": "25.4.0",
     "eslint": "10.0.3",
