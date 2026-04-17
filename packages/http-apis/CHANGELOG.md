@@ -1,5 +1,11 @@
 # @wealthsweet/http-apis
 
+## 1.5.0
+
+### Minor Changes
+
+- e092b10: Add investor and account token scoping params
+
 ## 1.4.0
 
 ### Minor Changes
