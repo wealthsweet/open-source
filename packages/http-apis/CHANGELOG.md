@@ -1,5 +1,11 @@
 # @wealthsweet/http-apis
 
+## 1.5.1
+
+### Patch Changes
+
+- 9c2a961: Add documentation around logo rendering behaviour
+
 ## 1.5.0
 
 ### Minor Changes
