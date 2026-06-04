@@ -49,20 +49,14 @@ export const generateAuthTokenRequestBody = z.object({
         examples: ["node-1"],
       },
     }),
-  investors: z
-    .array(externalReference)
-    .optional()
-    .meta({
-      description:
-        "A list of external references identifying investors this token is scoped to. If not provided, the token is not scoped to specific investors.",
-    }),
-  investorAccounts: z
-    .array(externalReference)
-    .optional()
-    .meta({
-      description:
-        "A list of external references identifying investor accounts this token is scoped to. If not provided, the token is not scoped to specific accounts.",
-    }),
+  investors: z.array(externalReference).optional().meta({
+    description:
+      "A list of external references identifying investors this token is scoped to. If not provided, the token is not scoped to specific investors.",
+  }),
+  investorAccounts: z.array(externalReference).optional().meta({
+    description:
+      "A list of external references identifying investor accounts this token is scoped to. If not provided, the token is not scoped to specific accounts.",
+  }),
 });
 
 export const generateAuthTokenResponse = z.object({
@@ -107,7 +101,10 @@ export const optionalBrandingOverridesSchema = z.object({
   pdfPageColor: brandingColor.optional(),
   pdfBannerContrastColor: brandingColor.optional(),
   fontFamily: SELECTABLE_FONTS_ENUM.optional(),
-  logoUrl: z.string().optional(),
+  logoUrl: z.string().optional().meta({
+    description:
+      "The URL of the logo to use in the embedded component. *Warning* PDF generation will not render svg images, so ensure that the logo provided is either a png or jpg for best results.",
+  }),
 });
 
 export const embedRequestParams = z.object({
@@ -322,11 +319,13 @@ export function createPerformanceSwaggerFile(): oas31.OpenAPIObject {
         errorResponse,
         serviceHealth,
         serviceHealthResponse,
+        brandingOverrides: optionalBrandingOverridesSchema,
       },
       examples: {
         brandingOverridesExample: {
           summary:
-            "Example branding configuration. Note this is a base64 encoded JSON string with the following structure.",
+            "Example branding configuration. Note this is a base64 encoded JSON string with the following structure. \n" +
+            "*Warning* PDF generation will not render svg images, so ensure that the logo provided is either a png or jpg for best results.",
           value: {
             balanceColor: "#00FF00",
             timeWeightedPerformanceColor: "rgb(0, 255, 0)",
