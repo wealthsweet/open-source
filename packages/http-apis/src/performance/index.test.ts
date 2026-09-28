@@ -56,6 +56,48 @@ describe("generateAuthTokenRequestBody", () => {
     expect(result.success).toBe(true);
   });
 
+  it("accepts up to 100 investor and account references", () => {
+    const refs = Array.from({ length: 100 }, (_, i) => ({
+      system: "seccl",
+      reference: `ref-${i}`,
+    }));
+    const result = generateAuthTokenRequestBody.safeParse({
+      clientId: "client-123",
+      clientSecret: "secret",
+      expires: null,
+      session: "session-1",
+      investors: refs,
+      investorAccounts: refs,
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("rejects more than 100 investor references", () => {
+    const result = generateAuthTokenRequestBody.safeParse({
+      clientId: "client-123",
+      clientSecret: "secret",
+      expires: null,
+      session: "session-1",
+      investors: Array.from({ length: 101 }, (_, i) => ({
+        system: "seccl",
+        reference: `ref-${i}`,
+      })),
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it("accepts empty scoping lists", () => {
+    const result = generateAuthTokenRequestBody.safeParse({
+      clientId: "client-123",
+      clientSecret: "secret",
+      expires: null,
+      session: "session-1",
+      investors: [],
+      investorAccounts: [],
+    });
+    expect(result.success).toBe(true);
+  });
+
   it("rejects missing required fields", () => {
     const result = generateAuthTokenRequestBody.safeParse({});
     expect(result.success).toBe(false);
@@ -157,7 +199,7 @@ describe("embedRequestParams", () => {
       token: "pk_test_TOKEN",
       from: "2020-01-01",
       to: "2021-01-01",
-      currencyIsoCode: "GBP",
+      reportingCurrencyIsoCode: "GBP",
       investorExtRefs: ["inv-1", "inv-2"],
       investorAccountExtRefs: ["inv-acc-1"],
       brandingOverrides: btoa(JSON.stringify({ primaryColor: "#FF0000" })),
@@ -171,10 +213,18 @@ describe("embedRequestParams", () => {
     expect(result.success).toBe(false);
   });
 
+  it("still accepts the deprecated currencyIsoCode", () => {
+    const result = embedRequestParams.safeParse({
+      token: "pk_test_TOKEN",
+      currencyIsoCode: "GBP",
+    });
+    expect(result.success).toBe(true);
+  });
+
   it("rejects currency code that is too short", () => {
     const result = embedRequestParams.safeParse({
       token: "pk_test_TOKEN",
-      currencyIsoCode: "GB",
+      reportingCurrencyIsoCode: "GB",
     });
     expect(result.success).toBe(false);
   });
@@ -182,7 +232,7 @@ describe("embedRequestParams", () => {
   it("rejects currency code that is too long", () => {
     const result = embedRequestParams.safeParse({
       token: "pk_test_TOKEN",
-      currencyIsoCode: "GBPP",
+      reportingCurrencyIsoCode: "GBPP",
     });
     expect(result.success).toBe(false);
   });

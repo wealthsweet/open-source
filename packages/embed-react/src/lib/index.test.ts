@@ -33,13 +33,39 @@ describe("generateWealthSweetElementUrl", () => {
         token: "test-token",
         from: "2020-01-01",
         to: "2021-01-01",
-        currencyIsoCode: "GBP",
+        reportingCurrencyIsoCode: "GBP",
       },
     });
     expect(url).toContain("token=test-token");
     expect(url).toContain("from=2020-01-01");
     expect(url).toContain("to=2021-01-01");
-    expect(url).toContain("currencyIsoCode=GBP");
+    expect(url).toContain("reportingCurrencyIsoCode=GBP");
+  });
+
+  it("sends the deprecated currencyIsoCode as reportingCurrencyIsoCode", () => {
+    const url = generateWealthSweetElementUrl({
+      origin: defaultOrigin,
+      path: defaultPath,
+      params: { token: "test-token", currencyIsoCode: "GBP" },
+    });
+    const params = new URL(url).searchParams;
+    expect(params.get("reportingCurrencyIsoCode")).toBe("GBP");
+    expect(params.has("currencyIsoCode")).toBe(false);
+  });
+
+  it("prefers reportingCurrencyIsoCode over the deprecated currencyIsoCode", () => {
+    const url = generateWealthSweetElementUrl({
+      origin: defaultOrigin,
+      path: defaultPath,
+      params: {
+        token: "test-token",
+        currencyIsoCode: "GBP",
+        reportingCurrencyIsoCode: "AUD",
+      },
+    });
+    const params = new URL(url).searchParams;
+    expect(params.get("reportingCurrencyIsoCode")).toBe("AUD");
+    expect(params.has("currencyIsoCode")).toBe(false);
   });
 
   it("base64-encodes branding configuration", () => {

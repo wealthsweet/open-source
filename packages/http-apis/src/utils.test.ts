@@ -15,8 +15,16 @@ describe("errorResponse", () => {
     expect(result.success).toBe(false);
   });
 
-  it("rejects missing error", () => {
+  it("accepts a missing error", () => {
     const result = errorResponse.safeParse({ message: "Something went wrong" });
-    expect(result.success).toBe(false);
+    expect(result.success).toBe(true);
+  });
+
+  it("accepts field validation errors", () => {
+    const result = errorResponse.safeParse({
+      message: "The request body was invalid",
+      error: { session: ["Invalid input: expected string, received undefined"] },
+    });
+    expect(result.success).toBe(true);
   });
 });
