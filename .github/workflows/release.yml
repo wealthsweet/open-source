@@ -13,7 +13,7 @@ jobs:
     name: Release
     runs-on: ubuntu-latest
     env:
-      node-version: "24.x"
+      node-version: "26.x"
     permissions:
       id-token: write
       contents: write

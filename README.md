@@ -91,6 +91,7 @@ Use the host exactly as listed. The SDK checks each message's `event.origin` aga
 ## Development
 
 This repository is a [pnpm](https://pnpm.io/) monorepo managed with [Turborepo](https://turbo.build/).
+Development uses Node.js 26, as set in `.nvmrc`.
 
 ```bash
 pnpm install
