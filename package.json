@@ -1,17 +1,17 @@
 {
   "name": "wealthsweet",
   "devDependencies": {
-    "@changesets/cli": "^2.31.1",
+    "@changesets/cli": "^3.0.3",
     "prettier": "^3.9.9",
     "prettier-plugin-organize-imports": "^4.3.0",
     "prettier-plugin-tailwindcss": "^0.8.1",
     "syncpack": "15.3.3",
-    "turbo": "^2.11.5",
-    "turbo-ignore": "^2.11.5",
+    "turbo": "^2.11.4",
+    "turbo-ignore": "^2.11.4",
     "vite": "^8.3.1",
     "vitest": "^5.0.2"
   },
-  "packageManager": "pnpm@10.34.5",
+  "packageManager": "pnpm@12.6.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/wealthsweet/open-source.git"

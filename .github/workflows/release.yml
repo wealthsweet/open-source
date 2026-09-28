@@ -20,7 +20,7 @@ jobs:
       pull-requests: write
     steps:
       - uses: actions/checkout@v5
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
       - name: Use Node.js ${{ env.node-version }}
         uses: actions/setup-node@v6
         with:
@@ -31,13 +31,14 @@ jobs:
         run: pnpm install
       - name: Create Release Pull Request or Publish to npm
         id: changesets
-        uses: changesets/action@v1
+        # v2 is the action's development branch, so pin a release
+        uses: changesets/action@v2.1.2
         with:
           # This expects you to have a script called release which does a build for your packages and calls changeset publish
-          publish: pnpm release-packages
+          publish-script: pnpm release-packages
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          # pnpm publishes through trusted publishing (OIDC) and falls back to this token
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Upload swagger to http-apis if released
         if: steps.changesets.outputs.published == 'true'
         uses: "actions/github-script@v7"
@@ -45,4 +46,4 @@ jobs:
           script: |
             const script = require('.github/workflows/upload-swagger.js')
             const fs = require('node:fs')
-            await script({ github }, ${{steps.changesets.outputs.publishedPackages}}, fs)
+            await script({ github }, ${{ steps.changesets.outputs.published-packages }}, fs)
