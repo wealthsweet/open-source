@@ -1,5 +1,4 @@
-import type { oas31 } from "openapi3-ts";
-import { createDocument } from "zod-openapi";
+import { createDocument, type oas32 } from "zod-openapi";
 import { z } from "zod/v4";
 import { errorResponse } from "../utils";
 
@@ -204,7 +203,7 @@ export const serviceHealthResponse = z.object({
   azure: serviceHealth.meta({ deprecated: true }),
 });
 
-export function createPerformanceSwaggerFile(): oas31.OpenAPIObject {
+export function createPerformanceSwaggerFile(): oas32.OpenAPIObject {
   return createDocument({
     openapi: "3.1.0",
     info: {

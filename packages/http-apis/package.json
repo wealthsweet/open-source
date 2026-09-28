@@ -2,7 +2,6 @@
   "name": "@wealthsweet/http-apis",
   "version": "1.5.0",
   "dependencies": {
-    "openapi3-ts": "^4.6.1",
     "zod": "^4.6.5"
   },
   "devDependencies": {
@@ -14,7 +13,7 @@
     "tsx": "4.23.15",
     "typescript": "5.9.3",
     "yaml": "2.9.1",
-    "zod-openapi": "5.4.6"
+    "zod-openapi": "6.0.2"
   },
   "exports": {
     "./performance/zod": {
