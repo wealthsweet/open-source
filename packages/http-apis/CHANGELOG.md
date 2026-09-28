@@ -1,5 +1,50 @@
 # @wealthsweet/http-apis
 
+## 2.0.0
+
+### Major Changes
+
+- a23951d: `createPerformanceSwaggerFile()` returns an OpenAPI 3.2 document type instead of `openapi3-ts`'s `oas31.OpenAPIObject`
+
+  This is a major release because the return type changed, but most code needs no changes. The generated spec is the same, and still declares OpenAPI 3.1.0. The Zod schemas and the `performance/api` types are unchanged.
+
+  You only need to change something if your code does one of these:
+
+  - Assigns the result to `oas31.OpenAPIObject`, or passes it to a function typed with it. Add a cast, since the 3.2 type allows `querystring` as a parameter location and `openapi3-ts`'s 3.1 type doesn't
+  - Imports `openapi3-ts` without depending on it yourself. It was a dependency of this package and isn't anymore
+
+### Minor Changes
+
+- abec8aa: Make the package importable from Node and match the token and embed endpoints
+
+  - The `performance/zod` and `performance/api` exports now resolve in Node as well as in bundlers
+  - `zod` and `openapi3-ts` are runtime dependencies instead of being bundled or missing
+  - Add `reportingCurrencyIsoCode` to the embed params and deprecate `currencyIsoCode`, which the embedded page ignores
+  - Limit `investors` and `investorAccounts` to 100 references each, as the token endpoint does
+  - `errorResponse.error` is optional and can hold per-field validation errors
+  - Remove the 403 response from the token endpoint, which never returns it
+
+### Patch Changes
+
+- ded50aa: Build with tsdown instead of tsup. The published files, exports and types are unchanged.
+- 0131e65: Rewrite the READMEs to match the embed API
+
+  - Document the current hook signatures, the staging host and the units of both `expires` values
+  - Describe when each message is sent, including that `INITIALISING` isn't sent and `USER_IDLE` repeats
+  - Document branding overrides, token scoping and the token endpoint's errors
+  - The spec states that `expires` is in seconds and links to this repository instead of a dead docs site
+
+- 9c2a961: Add documentation around logo rendering behaviour
+- 9596154: Publish ESM as `.mjs` and add an `exports` map to the embed packages
+
+  - `embed-message-api` and `embed-react` have an `exports` map, so ESM consumers get the ESM build and its types. Before, Node and TypeScript loaded the CommonJS build with ESM types
+  - The ESM files are `.mjs` and `.d.mts` instead of `.js` and `.d.ts`. Imports of the package names are unchanged, but deep imports of `dist/` files stop working
+
+- 7c14110: Update dependencies
+
+  - `zod` requires 4.6.5 or later
+  - In `http-apis`, `openapi3-ts` requires 4.6.1 or later
+
 ## 1.5.0
 
 ### Minor Changes
