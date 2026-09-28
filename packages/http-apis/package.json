@@ -11,7 +11,7 @@
     "prettier": "^3.9.9",
     "tsdown": "^0.23.0",
     "tsx": "4.23.15",
-    "typescript": "5.9.3",
+    "typescript": "6.0.3",
     "yaml": "2.9.1",
     "zod-openapi": "6.0.2"
   },
