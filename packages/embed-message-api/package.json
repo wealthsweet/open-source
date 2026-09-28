@@ -7,7 +7,7 @@
   "devDependencies": {
     "eslint": "^10.11.0",
     "prettier": "^3.9.9",
-    "tsup": "^8.5.1",
+    "tsdown": "^0.23.0",
     "typescript": "5.9.3"
   },
   "files": [
@@ -23,9 +23,9 @@
     "url": "git+https://github.com/wealthsweet/open-source.git"
   },
   "scripts": {
-    "build": "tsup",
-    "clean": "rm -r dist coverage .tsup || true",
-    "clean:full": "rm -r dist coverage node_modules .turbo .tsup || true",
+    "build": "tsdown",
+    "clean": "rm -r dist coverage || true",
+    "clean:full": "rm -r dist coverage node_modules .turbo || true",
     "lint": "eslint . && prettier -c src/",
     "test": "vitest --run",
     "test:coverage": "vitest --run --coverage.enabled"
