@@ -49,13 +49,13 @@ export const generateAuthTokenRequestBody = z.object({
         examples: ["node-1"],
       },
     }),
-  investors: z.array(externalReference).optional().meta({
+  investors: z.array(externalReference).max(100).optional().meta({
     description:
-      "A list of external references identifying investors this token is scoped to. If not provided, the token is not scoped to specific investors.",
+      "A list of up to 100 external references identifying investors this token is scoped to. If not provided, the token is not scoped to specific investors. An empty list scopes the token to no investors.",
   }),
-  investorAccounts: z.array(externalReference).optional().meta({
+  investorAccounts: z.array(externalReference).max(100).optional().meta({
     description:
-      "A list of external references identifying investor accounts this token is scoped to. If not provided, the token is not scoped to specific accounts.",
+      "A list of up to 100 external references identifying investor accounts this token is scoped to. If not provided, the token is not scoped to specific accounts. An empty list scopes the token to no accounts.",
   }),
 });
 
@@ -126,7 +126,7 @@ export const embedRequestParams = z.object({
       description: "The date to report performance calcs to",
       examples: ["2021-01-01"],
     }),
-  currencyIsoCode: z
+  reportingCurrencyIsoCode: z
     .string()
     .min(3)
     .max(3)
@@ -134,6 +134,17 @@ export const embedRequestParams = z.object({
     .meta({
       description: "The currency iso code to report performance in",
       examples: ["GBP"],
+    }),
+  currencyIsoCode: z
+    .string()
+    .min(3)
+    .max(3)
+    .optional()
+    .meta({
+      description:
+        "Deprecated: use reportingCurrencyIsoCode. The embedded page ignores this parameter. The embed-react SDK sends it as reportingCurrencyIsoCode.",
+      examples: ["GBP"],
+      deprecated: true,
     }),
   investorExtRefs: z
     .array(z.string())
@@ -244,19 +255,14 @@ export function createPerformanceSwaggerFile(): oas31.OpenAPIObject {
               },
             },
             "400": {
-              description: "Request failed to validate",
+              description:
+                "The request failed to validate, or none of the provided investor or account external references could be resolved",
               content: {
                 "application/json": { schema: errorResponse },
               },
             },
             "401": {
               description: "Invalid client ID or secret",
-              content: {
-                "application/json": { schema: errorResponse },
-              },
-            },
-            "403": {
-              description: "Forbidden",
               content: {
                 "application/json": { schema: errorResponse },
               },

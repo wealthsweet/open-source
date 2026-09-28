@@ -16,31 +16,34 @@ export type WealthSweetElementURLParams = {
   origin: WealthSweetElementOrigin;
 } & WealthSweetElement;
 
-function convertToUrlParams(
-  queryParams: Omit<
-    WealthSweetPerforamnceElementQueryParams,
-    "brandingOverrides"
-  > & {
-    brandingOverrides?: BrandingOverrides;
-  },
-): Record<string, string | string[] | null | undefined> {
+function convertToUrlParams({
+  currencyIsoCode,
+  ...queryParams
+}: Omit<WealthSweetPerforamnceElementQueryParams, "brandingOverrides"> & {
+  brandingOverrides?: BrandingOverrides;
+}): Record<string, string | string[] | null | undefined> {
+  // currencyIsoCode is deprecated and ignored by the embedded page, so send it under its current name
+  const reportingCurrencyIsoCode =
+    queryParams.reportingCurrencyIsoCode ?? currencyIsoCode;
   return Object.fromEntries(
-    Object.entries(queryParams).map(([key, value]) => {
-      if (
-        typeof value === "object" &&
-        value !== null &&
-        Array.isArray(value) === false
-      ) {
-        return [key, btoa(JSON.stringify(value))] satisfies [
+    Object.entries({ ...queryParams, reportingCurrencyIsoCode }).map(
+      ([key, value]) => {
+        if (
+          typeof value === "object" &&
+          value !== null &&
+          Array.isArray(value) === false
+        ) {
+          return [key, btoa(JSON.stringify(value))] satisfies [
+            string,
+            string | string[] | null | undefined,
+          ];
+        }
+        return [key, value] satisfies [
           string,
           string | string[] | null | undefined,
         ];
-      }
-      return [key, value] satisfies [
-        string,
-        string | string[] | null | undefined,
-      ];
-    }),
+      },
+    ),
   );
 }
 

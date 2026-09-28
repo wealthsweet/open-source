@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useSyncExternalStore } from "react";
 import { useOriginContextWithoutGuarantee } from "src/contexts/origin-context";
 import type { WealthSweetElementOrigin } from "src/lib";
 import {
@@ -18,9 +18,6 @@ export type UseWealthsweetMessagesProps = {
   /** The origin for the WealthSweet element. */
   origin?: WealthSweetElementOrigin;
 } & Partial<MessagingCallbacks>;
-
-/** Represents the current state of message listening. */
-type ListeningState = "INITIALISED" | "LISTENING" | "UNMOUNTED";
 
 /**
  * A hook that sets up message listening for WealthSweet elements.
@@ -53,8 +50,6 @@ export function useWealthsweetMessages({
 }: UseWealthsweetMessagesProps) {
   const [originContextLoaded, originContext] =
     useOriginContextWithoutGuarantee();
-  const [isListeningToMessages, setIsListeningToMessages] =
-    useState<ListeningState>("INITIALISED");
 
   // Even though the message hook handles this it is nicer to fail fast now if this is the only hook the user sees
   // This will throw an error when the param is not found
@@ -96,15 +91,19 @@ export function useWealthsweetMessages({
     ],
   );
 
-  useEffect(() => {
+  const subscribe = useCallback(() => {
     window.addEventListener("message", handleMessage);
-    return () => {
-      setIsListeningToMessages("UNMOUNTED");
-      window.removeEventListener("message", handleMessage);
-    };
+    return () => window.removeEventListener("message", handleMessage);
   }, [handleMessage]);
 
+  // The listener is attached on the client once mounted, and never during server rendering
+  const isListeningToMessages = useSyncExternalStore(
+    subscribe,
+    () => true,
+    () => false,
+  );
+
   return {
-    isListeningToMessages: isListeningToMessages == "LISTENING",
+    isListeningToMessages,
   };
 }

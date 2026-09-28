@@ -195,6 +195,15 @@ describe("buildHandleMessage", () => {
     expect(callbacks.onMessage).toHaveBeenCalled();
   });
 
+  it("defaults to https when the origin has no protocol", () => {
+    const callbacks = createCallbacks();
+    const handler = buildHandleMessage({ host: "app.example.com" }, callbacks);
+    const data = { type: "INITIALISING_DONE", messageTime: Date.now() };
+    handler(createMessageEvent("https://app.example.com", data));
+    expect(callbacks.onMessage).toHaveBeenCalled();
+    expect(callbacks.onInitialisingDone).toHaveBeenCalled();
+  });
+
   it("does not dispatch non-matching typed callbacks", () => {
     const callbacks = createCallbacks();
     const handler = buildHandleMessage(origin, callbacks);

@@ -72,7 +72,7 @@ export function combineCallbacks(
 }
 
 export function buildHandleMessage(
-  { protocol, host }: WealthSweetElementOrigin,
+  { protocol = "https", host }: WealthSweetElementOrigin,
   {
     onMessage,
     onUserEvent,
