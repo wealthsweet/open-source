@@ -10,7 +10,7 @@
     "eslint": "^10.11.0",
     "openapi-typescript": "7.13.0",
     "prettier": "^3.9.9",
-    "tsup": "^8.5.1",
+    "tsdown": "^0.23.0",
     "tsx": "4.23.15",
     "typescript": "5.9.3",
     "yaml": "2.9.1",
@@ -39,7 +39,7 @@
     "url": "git+https://github.com/wealthsweet/open-source.git"
   },
   "scripts": {
-    "build": "pnpm gen:swagger && pnpm gen:api && tsup",
+    "build": "pnpm gen:swagger && pnpm gen:api && tsdown",
     "clean": "rm -r dist || true",
     "clean:full": "rm -r dist node_modules .turbo || true",
     "gen:api": "pnpm openapi-typescript",

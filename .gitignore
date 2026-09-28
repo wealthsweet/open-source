@@ -47,6 +47,3 @@ next-env.d.ts
 
 # ignore claude code local files
 .claude
-
-# ignore tsup files
-**/.tsup
