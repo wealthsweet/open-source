@@ -9,6 +9,33 @@
         "!local"
       ],
       "pinVersion": "workspace:*"
+    },
+    {
+      "label": "The private root package has no version",
+      "dependencies": [
+        "wealthsweet"
+      ],
+      "dependencyTypes": [
+        "local"
+      ],
+      "isIgnored": true
+    },
+    {
+      "label": "Peer ranges describe what consumers may install",
+      "dependencyTypes": [
+        "peer"
+      ],
+      "isIgnored": true
+    },
+    {
+      "label": "eslint-plugin-react 7 doesn't support ESLint 10",
+      "packages": [
+        "@wealthsweet/embed-react"
+      ],
+      "dependencies": [
+        "eslint",
+        "@eslint/js"
+      ]
     }
   ]
 }

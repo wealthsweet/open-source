@@ -80,7 +80,7 @@ export function TokenProvider({
     useState<TokenFetchState>("INITIALISED");
   const [shouldForceRefetch, setShouldForceRefetch] = useState(false);
   const [error, setError] = useState<TokenError>();
-  const tokenTimeout = useRef<number>(undefined);
+  const tokenTimeout = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   /**
    * Internally handles token fetch errors.
@@ -157,6 +157,7 @@ export function TokenProvider({
    */
   useEffect(() => {
     if (shouldForceRefetch) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- generateToken sets FETCHING before it awaits
       void generateToken();
       setShouldForceRefetch(false);
     }
@@ -172,6 +173,7 @@ export function TokenProvider({
    */
   useEffect(() => {
     if (!token && tokenFetchState === "INITIALISED") {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- generateToken sets FETCHING before it awaits
       void generateToken();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
