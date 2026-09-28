@@ -28,9 +28,15 @@ export const generateAuthTokenRequestBody = z.object({
     description:
       "The identifier of the branding to use. If not provided, the default client branding will be used.",
   }),
-  expires: z.coerce.number().min(0, invalidExpiresMessage).nullable().meta({
-    description: "The UTC timestamp at which this token will expire",
-  }),
+  expires: z.coerce
+    .number()
+    .min(0, invalidExpiresMessage)
+    .nullable()
+    .meta({
+      description:
+        "When this token expires, as Unix time in seconds. Pass null for a token valid for one hour.",
+      examples: [1767225600],
+    }),
   session: z.string().meta({
     description: `A unique reference for a session to scope this signature to.
     For instance the session ref may be derived from a user id such that multiple tokens can access the same session.
@@ -213,7 +219,7 @@ export function createPerformanceSwaggerFile(): oas31.OpenAPIObject {
         description: "Operations based around embedded components",
         externalDocs: {
           description: "Find out more",
-          url: "http://docs.wealthsweet.com",
+          url: "https://github.com/wealthsweet/open-source/tree/main/packages/http-apis#readme",
         },
       },
       {
@@ -221,7 +227,7 @@ export function createPerformanceSwaggerFile(): oas31.OpenAPIObject {
         description: "Operations based around application health",
         externalDocs: {
           description: "Find out more",
-          url: "http://docs.wealthsweet.com",
+          url: "https://github.com/wealthsweet/open-source/tree/main/packages/http-apis#readme",
         },
       },
       {
@@ -229,7 +235,7 @@ export function createPerformanceSwaggerFile(): oas31.OpenAPIObject {
         description: "Operations based around authentication",
         externalDocs: {
           description: "Find out more",
-          url: "http://docs.wealthsweet.com",
+          url: "https://github.com/wealthsweet/open-source/tree/main/packages/http-apis#readme",
         },
       },
     ],

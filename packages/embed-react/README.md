@@ -1,176 +1,243 @@
 # `@wealthsweet/embed-react`
 
-## Installation
+React hooks and providers for embedding WealthSweet performance reporting in an `iframe`.
 
-The fastest way to use WealthSweet is to simply install with your package manager of choice.
-
-```
+```bash
 npm install @wealthsweet/embed-react
 ```
 
-## Usage
+Requires React 18 or 19. The package depends on [`@wealthsweet/http-apis`](../http-apis) and [`@wealthsweet/embed-message-api`](../embed-message-api) and re-exports the message types.
 
-There are many possible approaches to embedding WealthSweet in your application. Some approaches are simple, and are
-designed to work out of the box. Other approaches are more complex, but allow fine-grained control over the embedded
-WealthSweet components.
+## The origin
 
-### Approach 1: React Context
+Every hook and the provider take an `origin` naming the WealthSweet server:
 
-The easiest way to get started with this SDK is to utilise the `WealthSweetContext` so that this library can manage its own state in your browser.
-
-The `WealthSweetContext` takes a single prop `fetchToken` which the `WealthSweetContext` then uses to fetch and update the embedded API token when it is required.
-
+```ts
+type WealthSweetElementOrigin = {
+  host: string; // e.g. "performance.wealthsweet.com"
+  protocol?: "https" | "http"; // defaults to "https"
+};
 ```
+
+| Environment | `host`                                |
+| ----------- | ------------------------------------- |
+| Production  | `performance.wealthsweet.com`         |
+| Staging     | `performance.wealthsweet-staging.com` |
+
+The SDK uses the origin to build the iframe URL and to discard messages whose `event.origin` doesn't match it. Pass `protocol: "http"` only for a local server.
+
+## Tokens
+
+The embedded page authenticates with a token that your backend requests from `POST /api/auth/token` using your `clientId` and `clientSecret`. Never send the secret to the browser. The [`http-apis` README](../http-apis/README.md#post-apiauthtoken) documents the request body, scoping and errors.
+
+Two different `expires` values are involved, and they use different units:
+
+| Where                                       | Unit                          | Meaning                                                             |
+| ------------------------------------------- | ----------------------------- | ------------------------------------------------------------------- |
+| `expires` you **send** to `/api/auth/token` | Unix time in **seconds**      | When the token expires. `null` gives a token valid for one hour.    |
+| `expires` your `fetchToken` **returns**     | Unix time in **milliseconds** | When the provider should treat the token as expired and refresh it. |
+
+A backend route might look like this:
+
+```ts
+// POST /api/wealthsweet-token (runs on your server)
+export async function POST() {
+  const expiresInSeconds = Math.floor(Date.now() / 1000) + 60 * 60; // one hour
+
+  const res = await fetch(
+    "https://performance.wealthsweet.com/api/auth/token",
+    {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        clientId: process.env.WEALTHSWEET_CLIENT_ID,
+        clientSecret: process.env.WEALTHSWEET_CLIENT_SECRET,
+        session: "user-123", // a reference for the signed-in user
+        expires: expiresInSeconds,
+      }),
+    },
+  );
+  if (!res.ok) throw new Error(`Token request failed: ${res.status}`);
+  const { token } = await res.json();
+
+  return Response.json({ token, expires: expiresInSeconds * 1000 });
+}
+```
+
+## Building the iframe URL
+
+There are three ways to do it, from least to most manual.
+
+### 1. Provider and hook (recommended)
+
+`WealthSweetProvider` calls `fetchToken` on mount and again one minute before each token expires. Hooks inside it read the origin and token from context.
+
+```tsx
+import {
+  usePerformanceUrl,
+  WealthSweetProvider,
+} from "@wealthsweet/embed-react";
+
 async function fetchToken() {
-  \*
-   * Add your backend API call here to use your clientId / secret combination to fetch an embedded token from the WealthSweet API.
-   * Include the UTC timestamp of when the token expires in your response of so that this library can refresh the token before it goes stale
-  */
-  return fetch('/api/getWealthSweetToken')
+  const res = await fetch("/api/wealthsweet-token", { method: "POST" });
+  return res.json(); // { token: string, expires: number (ms) }
 }
 
-export function Providers({children}: {children: ReactNode}) {
+export function Providers({ children }: { children: React.ReactNode }) {
   return (
-    <WealthSweetProvider fetchToken={fetchToken}>
+    <WealthSweetProvider
+      origin={{ host: "performance.wealthsweet.com" }}
+      fetchToken={fetchToken}
+      onFetchTokenError={(error) => console.error(error)}
+    >
       {children}
     </WealthSweetProvider>
-  )
-}
-```
-
-To display a `WealthSweetElement`, you can use the libraries hooks to create the correct `src` attribute for the `iframe`.
-
-The collection of hooks that are exposed take two parameters:
-
-- `origin` - The origin server to connect to.
-  - Specifies a `host` and a `protocol` to distinguish between our staging / production instance of the application.
-    - `protocol`: Defaults to `https` and should not need to be configured
-    - `host`: Set to `staging.performance.wealthsweet.com` for testing purposes and `performance.wealthsweet.com` for production instances
-- `apiParams` - The api parameters used to create the IFrame url
-
-```
-export default function EmbeddedPerformanceIFrame({
-  apiParams,
-}: {
-  apiParams?: Omit<PerformancePageElement["params"], "token">;
-}) {
-  const { isTokenLoaded, performanceUrl } = usePerformanceUrl(
-    { host: 'staging.performance.wealthsweet.com' },
-    apiParams ?? {},
   );
-  if (!isTokenLoaded) {
-    return <div>Loading...</div>;
-  }
+}
 
+export function PerformanceReport() {
+  const { isTokenLoaded, isTokenError, performanceUrl } = usePerformanceUrl({
+    from: "2024-01-01",
+    to: "2025-01-01",
+    reportingCurrencyIsoCode: "GBP",
+  });
+
+  if (isTokenError) return <div>Could not load the report</div>;
+  if (!isTokenLoaded) return <div>Loading...</div>;
   return (
-    <iframe
-      src={performanceUrl}
-      className="w-full h-[1000px] border-2 border-green-600"
-    />
+    <iframe src={performanceUrl} style={{ width: "100%", height: 1000 }} />
   );
 }
 ```
 
-The context will call the provided callback function before the token expires to get a new token and update the `performanceUrl` automatically.
+To fetch a new token before the current one expires, for example after the signed-in user changes, call `forceRefetch` from `useTokenContext()`:
 
-The `refetchToken` function that is exposed from the `TokenProvider` refetches the token on the next render, even if the current token has not expired. You may want to do this when the `fetchToken` function is updated to a different user context.
-### Approach 2: Standalone React Hook
+```tsx
+import { useTokenContext } from "@wealthsweet/embed-react";
 
-If you would like to handle the state management of the token yourself then the hook can be used standalone as shown below:
-
+const { forceRefetch } = useTokenContext();
 ```
-export default function EmbeddedPerformanceIFrame({
-  apiParams,
-}: {
-  apiParams?: PerformancePageElement["params"]
-}) {
-  const { isTokenLoaded, performanceUrl } = usePerformanceUrl(
-    { host: 'staging.performance.wealthsweet.com' },
-    apiParams ?? {},
-  );
-  if (!isTokenLoaded) {
-    return <div>Loading...</div>;
-  }
 
+### 2. Hook without the provider
+
+Pass `origin` and `token` to the hook and manage the token yourself:
+
+```tsx
+import { usePerformanceUrl } from "@wealthsweet/embed-react";
+
+export function PerformanceReport({ token }: { token: string }) {
+  const { performanceUrl } = usePerformanceUrl({
+    origin: { host: "performance.wealthsweet.com" },
+    token,
+    reportingCurrencyIsoCode: "GBP",
+  });
   return (
-    <iframe
-      src={performanceUrl}
-      className="w-full h-[1000px]"
-    />
+    <iframe src={performanceUrl} style={{ width: "100%", height: 1000 }} />
   );
 }
 ```
 
-> [!WARNING]
-> The hook needs to be instantiated within a `WealthSweetContext` OR be provided a token. If it is called and no `WealthSweetContext` can be found or no token has been provided in the properties, an error will be thrown.
+A value passed to the hook takes precedence over the provider's. The hook throws if it can't find an `origin`, or a token, in either its arguments or a surrounding `WealthSweetProvider`.
 
-### Approach 3: Standalone Function
+`usePerformanceUrl` returns:
 
-If you would instead prefer to use this library for types and utilities and do all the React work yourself, you can use the `generateWealthSweetElementUrl` method as shown below:
+| Field             | Type                                                  | Description                                         |
+| ----------------- | ----------------------------------------------------- | --------------------------------------------------- |
+| `isTokenLoaded`   | `boolean`                                             | `true` once `performanceUrl` is set                 |
+| `performanceUrl`  | `string \| undefined`                                 | The iframe `src`                                    |
+| `isTokenError`    | `boolean`                                             | `true` if `fetchToken` threw                        |
+| `tokenError`      | `{ message: string; error: unknown } \| undefined`    | What `fetchToken` threw                             |
+| `tokenFetchState` | `"INITIALISED" \| "FETCHING" \| "FETCHED" \| "ERROR"` | Provider fetch state. Absent when you pass `token`. |
 
+### 3. Plain function
+
+`generateWealthSweetElementUrl` has no React dependency:
+
+```ts
+import { generateWealthSweetElementUrl } from "@wealthsweet/embed-react";
+
+const url = generateWealthSweetElementUrl({
+  origin: { host: "performance.wealthsweet.com" },
+  path: "embed/pages/performance",
+  params: { token: "your-token", from: "2024-01-01", to: "2025-01-01" },
+  brandingOverrides: { primaryColor: "#0f172a" },
+});
 ```
-function getPerformanceUrl(params: PerformancePageElement["params"]) {
-  return generateWealthSweetElementUrl({
-    origin,
-    path: "embed/pages/performance",
-    params,
-  }),
-}
-```
 
-The `origin` configuration is the same as when using the React Hook and the parameters must include a token for the URL to authenticate with.
+## Report parameters
+
+All three approaches accept these parameters. The SDK joins arrays with commas and base64-encodes `brandingOverrides`.
+
+| Parameter                  | Type                    | Description                                                                           |
+| -------------------------- | ----------------------- | ------------------------------------------------------------------------------------- |
+| `token`                    | `string`                | The embed token. Required unless the provider supplies it.                            |
+| `from`                     | `string` (`YYYY-MM-DD`) | Start of the reporting period                                                         |
+| `to`                       | `string` (`YYYY-MM-DD`) | End of the reporting period                                                           |
+| `reportingCurrencyIsoCode` | `string`                | Three-letter currency to report in, e.g. `GBP`. Defaults to your platform's currency. |
+| `currencyIsoCode`          | `string`                | **Deprecated.** Use `reportingCurrencyIsoCode`. The SDK sends it under the new name.  |
+| `investorExtRefs`          | `string[]`              | Investor references to report on                                                      |
+| `investorAccountExtRefs`   | `string[]`              | Account references to report on                                                       |
+| `brandingOverrides`        | `BrandingOverrides`     | Colours, font and logo for this embed. See below.                                     |
+
+`investorExtRefs` and `investorAccountExtRefs` narrow the report within whatever the token allows. They currently resolve Seccl references only. To restrict what a user can see, scope the token instead.
+
+## Branding overrides
+
+`brandingOverrides` overrides the branding configured for your organisation, or for the `brandingId` used when the token was issued. Every field is optional.
+
+| Field                                                                                                                                                                                                                                      | Description                                                                         |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------- |
+| `primaryColor`, `primaryForegroundColor`, `secondaryColor`, `secondaryForegroundColor`, `callToActionColor`, `callToActionForegroundColor`                                                                                                 | Interface colours                                                                   |
+| `balanceColor`, `timeWeightedPerformanceColor`, `moneyWeightedPerformanceColor`, `positiveCapitalMovementColor`, `negativeCapitalMovementColor`                                                                                            | Chart colours                                                                       |
+| `pdfBalanceColor`, `pdfTimeWeightedPerformanceColor`, `pdfMoneyWeightedPerformanceColor`, `pdfPositiveCapitalMovementColor`, `pdfNegativeCapitalMovementColor`, `pdfTextColor`, `pdfBannerColor`, `pdfPageColor`, `pdfBannerContrastColor` | PDF report colours                                                                  |
+| `fontFamily`                                                                                                                                                                                                                               | One of `Inter`, `Open Sans`, `Roboto`, `Poppins`, `Brown Regular`, `Whitney Medium` |
+| `logoUrl`                                                                                                                                                                                                                                  | Logo image URL. Use PNG or JPG: PDF reports can't render SVG.                       |
+
+Colours accept any CSS colour string, such as `#ffffff`, `rgb(255, 255, 255)` or `hsl(0, 0%, 100%)`. The page ignores an invalid colour. An invalid `fontFamily` makes it ignore the whole override.
 
 ## Listening to messages
 
-Once the WealthSweet UI is loaded into your iframe the WealthSweet UI will begin posting messages to its parent window via the browser [postMessage](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage) api.
+The embedded page posts messages to its immediate parent window with `window.parent.postMessage(message, "*")`. Only the page that contains the `iframe` receives them. They carry lifecycle and activity information, never user data. The [`embed-message-api` README](../embed-message-api/README.md#messages) lists every message and when it is sent.
 
-Internally this is done with code similar to
+### `useWealthsweetMessages`
 
+Registers a callback per message type:
+
+```tsx
+import { useWealthsweetMessages } from "@wealthsweet/embed-react";
+
+const { isListeningToMessages } = useWealthsweetMessages({
+  origin: { host: "performance.wealthsweet.com" }, // optional inside WealthSweetProvider
+  onMessage: (message) => console.log(message.type),
+  onInitialisingDone: () => console.log("Report loaded"),
+  onUserEvent: ({ userEventTime }) => console.log("Active at", userEventTime),
+  onUserIdle: ({ lastActiveTime }) => console.log("Idle since", lastActiveTime),
+  onError: ({ message, errorDigest }) => console.error(message, errorDigest),
+});
 ```
-window.parent.postMessage(message, "*");
+
+The other callbacks are `onInitialising`, `onRendering` and `onRenderingDone`. `onMessage` receives every message, before the type-specific callback. Wrap callbacks in `useCallback`: a new function on every render re-registers the listener.
+
+### `useWealthsweetIdleStatus`
+
+Tracks whether the user has been inactive inside the iframe for longer than `timeout`:
+
+```tsx
+import { useWealthsweetIdleStatus } from "@wealthsweet/embed-react";
+
+const { isIdle, lastActiveTime } = useWealthsweetIdleStatus({
+  origin: { host: "performance.wealthsweet.com" }, // optional inside WealthSweetProvider
+  timeout: 10 * 60 * 1000, // default: 10 minutes
+  onIdle: () => console.log("Idle"),
+  onAction: () => console.log("Active"),
+});
 ```
 
-> [!IMPORTANT]
-> WealthSweet posts messages to the **immediate parent** of the window in which it is loaded. So listening to those messages has to be done by the immediate parent.
-> Multiple levels of `iframe` nesting will not propagate messages to grandparents and older relatives.
+| Option     | Description                                                                                                                                           |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `origin`   | The WealthSweet server origin                                                                                                                         |
+| `timeout`  | Milliseconds of inactivity before `isIdle` becomes `true`. Default 10 minutes.                                                                        |
+| `onIdle`   | Called for each `USER_IDLE` message once the user has been inactive for longer than `timeout`. That repeats about once a second while they stay idle. |
+| `onAction` | Called for each `USER_EVENT` message, at most once a second while the user is active                                                                  |
 
-> [!NOTE]
-> Since WealthSweet does not know the domain that the parent window is hosted on we post this message to _any_ domain (`*`).
-> The messages that WealthSweet posts are purely lifecycle messages of the WealthSweet application and will **NEVER** contain user information.
-> The WealthSweet SDK requires that a `origin` be supplied to read from the `postMessage` api, this is so that the SDK can check that the message originates from the expected `origin` of the WealthSweet UI (via the `event.origin` field).
-> All messages not from this `origin` will be ignored.
-
-### Hook: useWealthSweetMessages
-
-The `useWealthSweetMessages` hook is a way to supply typesafe callbacks that will be called when the SDK receives an `EmbedMessage` from the `postMessage` api.
-
-`useWealthSweetMessages` Params
-| Parameter | Description |
-| -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `origin` | The origin server you expect messages to be coming from (AKA the same server the iframe is loaded from). <br> Specifies a host and a protocol to distinguish between our staging / production instance of the application. <br><ul><li>protocol: Defaults to https and should not need to be configured</li><li>host: Set to staging.performance.wealthsweet.com for testing purposes and performance.wealthsweet.com in production</li></ul> |
-| `onMessage` | A callback that executes when the page receives any `EmbedMessage` message |
-| `onError` | A callback that executes when the page receives an `EmbedMessageError` message |
-| `onInitialising` | A callback that executes when the page receives an `EmbedMessageInitialising` message |
-| `onInitialisingDone` | A callback that executes when the page receives an `EmbedMessageInitialisingDone` message |
-| `onRendering` | A callback that executes when the page receives an `EmbedMessageRendering` message |
-| `onRenderingDone` | A callback that executes when the page receives an `EmbedMessageRenderingDone` message |
-| `onUserEvent` | A callback that executes when the page receives an `EmbedMessageUserEvent` message. <br> The `iframe` will fire this message if any of the following events occur within it; <br> <ul><li>`mousemove`</li><li>`keydown`</li><li>`wheel`</li><li>`DOMMouseScroll`</li><li>`mousewheel`</li><li>`mousedown`</li><li>`touchstart`</li><li>`touchmove`</li><li>`MSPointerDown`</li><li>`MSPointerMove`</li><li>`visibilitychange`</li></ul> <br> User events are throttled to one message per second |
-| `onUserIdle` | A callback that executes when the page receives an `EmbedMessageUserIdle` message. <br> An `onUserIdle` message is sent if the user has not been active for one second. This message contains the last time that the user was active. |
-
-### Hook: useIdleStatus
-
-The `useIdleStatus` hook is a convenient wrapper around the `useWealthSweetMessages` hook that listens to `onUserEvent` and `onUserIdle` messages.
-
-`useWealthSweetMessages` Parameters
-| Parameter | Description |
-| --- | --- |
-| `origin`: object | The origin server you expect messages to be coming from (AKA the same server the iframe is loaded from). <br> Specifies a host and a protocol to distinguish between different instances of the WealthSweet service. <br> <ul> <li>protocol: Defaults to https and should not need to be configured</li><li>host: Set to staging.performance.wealthsweet.com for testing purposes and performance.wealthsweet.com in production</li></ul> |
-| `timeout`: number | A timeout in `ms` for how long to wait until this hook reports a status of `isIidle = true`. <br> The default for `timeout` is 10 minutes |
-| `onIdle`: () => void | A callback that executes after a user has been idle for `timeout` ms. |
-| `onAction`: () => void | A callback that executes when a user event occurs (based on the `onUserEvent` callback function). |
-
-`useWealthSweetMessages` Returns
-| Parameter | Description |
-| --- | ---|
-| `lastActiveTime`: number | The last time that the user was active as a Unix Timestamp in `ms` |
-| `isIdle`: boolean | This is `true` if the user is currently idle |
+It returns `isIdle`, `lastActiveTime` (Unix time in milliseconds, `undefined` until the first activity message) and `isListeningToMessages`.

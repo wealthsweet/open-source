@@ -23,7 +23,9 @@ describe("errorResponse", () => {
   it("accepts field validation errors", () => {
     const result = errorResponse.safeParse({
       message: "The request body was invalid",
-      error: { session: ["Invalid input: expected string, received undefined"] },
+      error: {
+        session: ["Invalid input: expected string, received undefined"],
+      },
     });
     expect(result.success).toBe(true);
   });
