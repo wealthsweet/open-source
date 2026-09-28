@@ -35,17 +35,17 @@ export const createContextAndHook = <CtxVal>(
   UseCtxFn<[true, CtxVal] | [false, null]>,
 ] => {
   const { assertCtxFn = assertContextExists } = options ?? {};
-  const Ctx = createContext<{ value: CtxVal } | undefined>(undefined);
-  Ctx.displayName = displayName;
+  const ValueContext = createContext<{ value: CtxVal } | undefined>(undefined);
+  ValueContext.displayName = displayName;
 
   const useCtx = () => {
-    const ctx = useContext(Ctx);
+    const ctx = useContext(ValueContext);
     assertCtxFn(ctx, `${displayName} not found`);
     return { ...(ctx?.value as CtxVal), contextLoaded: true as const };
   };
 
   const useCtxWithoutGuarantee = () => {
-    const ctx = useContext(Ctx);
+    const ctx = useContext(ValueContext);
     if (ctx) {
       return [true, ctx.value] as [true, CtxVal];
     } else {
@@ -53,5 +53,5 @@ export const createContextAndHook = <CtxVal>(
     }
   };
 
-  return [Ctx, useCtx, useCtxWithoutGuarantee];
+  return [ValueContext, useCtx, useCtxWithoutGuarantee];
 };

@@ -26,16 +26,6 @@
         "peer"
       ],
       "isIgnored": true
-    },
-    {
-      "label": "eslint-plugin-react 7 doesn't support ESLint 10",
-      "packages": [
-        "@wealthsweet/embed-react"
-      ],
-      "dependencies": [
-        "eslint",
-        "@eslint/js"
-      ]
     }
   ]
 }

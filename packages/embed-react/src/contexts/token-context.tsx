@@ -80,7 +80,7 @@ export function TokenProvider({
     useState<TokenFetchState>("INITIALISED");
   const [shouldForceRefetch, setShouldForceRefetch] = useState(false);
   const [error, setError] = useState<TokenError>();
-  const tokenTimeout = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const tokenTimeoutRef = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   /**
    * Internally handles token fetch errors.
@@ -126,11 +126,11 @@ export function TokenProvider({
   const generateToken = useCallback(async () => {
     try {
       const { expires } = await processTokenFetch(fetchToken);
-      if (tokenTimeout.current !== undefined) {
-        clearTimeout(tokenTimeout.current);
+      if (tokenTimeoutRef.current !== undefined) {
+        clearTimeout(tokenTimeoutRef.current);
       }
       // One minute before this token expires, fetch a new token
-      tokenTimeout.current = setTimeout(
+      tokenTimeoutRef.current = setTimeout(
         forceRefetch,
         expires - new Date().getTime() - ONE_MINUTE,
       );
@@ -169,7 +169,7 @@ export function TokenProvider({
    * This will run once when the component mounts, and will run again if the generateToken function changes, potentially every render cycle.
    * Since this only does something when the token is not set and the tokenFetchState is INITIALISED, it should not cause unnecessary re-renders.
    * The token should always be set after the first render that the generateToken function succeeds.
-   * All other token updates are done through the forceRefetch function, or the tokenTimeout.
+   * All other token updates are done through the forceRefetch function, or the tokenTimeoutRef.
    */
   useEffect(() => {
     if (!token && tokenFetchState === "INITIALISED") {
@@ -184,8 +184,8 @@ export function TokenProvider({
    */
   useEffect(
     () => () => {
-      if (tokenTimeout.current !== undefined) {
-        clearTimeout(tokenTimeout.current);
+      if (tokenTimeoutRef.current !== undefined) {
+        clearTimeout(tokenTimeoutRef.current);
       }
     },
     [],
