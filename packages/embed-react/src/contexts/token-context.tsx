@@ -157,6 +157,7 @@ export function TokenProvider({
    */
   useEffect(() => {
     if (shouldForceRefetch) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- generateToken sets FETCHING before it awaits
       void generateToken();
       setShouldForceRefetch(false);
     }
@@ -172,6 +173,7 @@ export function TokenProvider({
    */
   useEffect(() => {
     if (!token && tokenFetchState === "INITIALISED") {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- generateToken sets FETCHING before it awaits
       void generateToken();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
