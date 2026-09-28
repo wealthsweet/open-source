@@ -5,3 +5,8 @@ packages:
 # esbuild ships its binary as an optional dependency, so its postinstall isn't needed
 allowBuilds:
   esbuild: false
+
+# openapi-typescript's peer range stops at TypeScript 5, but it generates the same types on 6
+peerDependencyRules:
+  allowedVersions:
+    openapi-typescript>typescript: "6"
