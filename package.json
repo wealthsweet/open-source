@@ -4,7 +4,7 @@
     "@changesets/cli": "^2.30.0",
     "prettier": "^3.9.9",
     "prettier-plugin-organize-imports": "^4.3.0",
-    "prettier-plugin-tailwindcss": "^0.7.2",
+    "prettier-plugin-tailwindcss": "^0.8.1",
     "syncpack": "15.3.3",
     "turbo": "^2.11.5",
     "turbo-ignore": "^2.11.5",
