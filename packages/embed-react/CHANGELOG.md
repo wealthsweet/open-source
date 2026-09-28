@@ -1,5 +1,41 @@
 # @wealthsweet/embed-react
 
+## 1.4.0
+
+### Minor Changes
+
+- abec8aa: Fix message delivery and declare runtime dependencies
+
+  - Messages are delivered when `origin` omits `protocol`. It now defaults to `https`, as the URL builder already did
+  - `isListeningToMessages` is `true` while the hook is mounted
+  - A deprecated `currencyIsoCode` param is sent as `reportingCurrencyIsoCode`
+  - `@wealthsweet/http-apis` and `@wealthsweet/embed-message-api` are dependencies, so the published types resolve
+
+- 9596154: Publish ESM as `.mjs` and add an `exports` map to the embed packages
+
+  - `embed-message-api` and `embed-react` have an `exports` map, so ESM consumers get the ESM build and its types. Before, Node and TypeScript loaded the CommonJS build with ESM types
+  - The ESM files are `.mjs` and `.d.mts` instead of `.js` and `.d.ts`. Imports of the package names are unchanged, but deep imports of `dist/` files stop working
+
+### Patch Changes
+
+- ded50aa: Build with tsdown instead of tsup. The published files, exports and types are unchanged.
+- 0131e65: Rewrite the READMEs to match the embed API
+
+  - Document the current hook signatures, the staging host and the units of both `expires` values
+  - Describe when each message is sent, including that `INITIALISING` isn't sent and `USER_IDLE` repeats
+  - Document branding overrides, token scoping and the token endpoint's errors
+  - The spec states that `expires` is in seconds and links to this repository instead of a dead docs site
+
+- Updated dependencies [ded50aa]
+- Updated dependencies [0131e65]
+- Updated dependencies [9c2a961]
+- Updated dependencies [abec8aa]
+- Updated dependencies [9596154]
+- Updated dependencies [7c14110]
+- Updated dependencies [a23951d]
+  - @wealthsweet/embed-message-api@1.3.0
+  - @wealthsweet/http-apis@2.0.0
+
 ## 1.3.0
 
 ### Minor Changes
