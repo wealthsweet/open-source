@@ -13,8 +13,8 @@
   "files": [
     "dist/**"
   ],
-  "main": "dist/index.cjs",
-  "module": "dist/index.js",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
   "publishConfig": {
     "access": "public"
   },
@@ -28,8 +28,16 @@
     "clean:full": "rm -r dist coverage node_modules .turbo || true",
     "lint": "eslint . && prettier -c src/",
     "test": "vitest --run",
-    "test:coverage": "vitest --run --coverage.enabled"
+    "test:coverage": "vitest --run --coverage.enabled",
+    "typecheck": "tsc --noEmit"
   },
   "type": "module",
-  "types": "dist/index.d.ts"
+  "types": "./dist/index.d.cts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    },
+    "./package.json": "./package.json"
+  }
 }

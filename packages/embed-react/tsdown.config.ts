@@ -5,8 +5,7 @@ export default defineConfig({
   format: ["cjs", "esm"],
   dts: true,
   minify: true,
-  // Keep tsup's .js and .d.ts names instead of tsdown's .mjs and .d.mts
-  fixedExtension: false,
+  exports: true,
   deps: {
     neverBundle: ["react"],
   },

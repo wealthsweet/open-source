@@ -22,12 +22,6 @@
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "target": "ESNext",
-    "baseUrl": ".",
-    "paths": {
-      "@wealthsweet/http-apis/performance/api": [
-        "../http-apis/dist/performance/api"
-      ]
-    },
     "outDir": "dist",
     "declaration": true
   }

@@ -9,7 +9,6 @@
     "@eslint-react/eslint-plugin": "^5.20.8",
     "@eslint/js": "^10.0.1",
     "@testing-library/dom": "^10.4.2",
-    "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.3",
     "@types/react": "19.3.0",
     "@types/react-dom": "^19.3.0",
@@ -27,8 +26,8 @@
   "files": [
     "dist/**"
   ],
-  "main": "dist/index.cjs",
-  "module": "dist/index.js",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
   "peerDependencies": {
     "react": ">=18 || >=19"
   },
@@ -45,8 +44,16 @@
     "clean:full": "rm -r dist coverage node_modules .turbo || true",
     "lint": "eslint . && prettier -c src/",
     "test": "vitest --run",
-    "test:coverage": "vitest  --run --coverage.enabled"
+    "test:coverage": "vitest  --run --coverage.enabled",
+    "typecheck": "tsc --noEmit"
   },
   "type": "module",
-  "types": "dist/index.d.ts"
+  "types": "./dist/index.d.cts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    },
+    "./package.json": "./package.json"
+  }
 }
