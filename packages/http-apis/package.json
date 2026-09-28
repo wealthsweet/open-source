@@ -16,16 +16,9 @@
     "zod-openapi": "6.0.2"
   },
   "exports": {
-    "./performance/zod": {
-      "types": "./dist/performance/zod.d.ts",
-      "import": "./dist/performance/zod.js",
-      "default": "./dist/performance/zod.js"
-    },
-    "./performance/api": {
-      "types": "./dist/performance/api.d.ts",
-      "import": "./dist/performance/api.js",
-      "default": "./dist/performance/api.js"
-    }
+    "./performance/api": "./dist/performance/api.mjs",
+    "./performance/zod": "./dist/performance/zod.mjs",
+    "./package.json": "./package.json"
   },
   "files": [
     "dist/**"
@@ -45,15 +38,19 @@
     "gen:swagger": "tsx ./src/generate-swagger-files",
     "lint": "eslint",
     "test": "vitest --run",
-    "test:coverage": "vitest --run --coverage.enabled"
+    "test:coverage": "vitest --run --coverage.enabled",
+    "typecheck": "tsc --noEmit"
   },
   "sideEffects": false,
   "type": "module",
   "typesVersions": {
     "*": {
-      "*": [
-        "dist/*"
+      "performance/*": [
+        "./dist/performance/*.d.mts"
       ]
     }
+  },
+  "inlinedDependencies": {
+    "zod-openapi": "6.0.2"
   }
 }

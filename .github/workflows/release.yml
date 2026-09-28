@@ -19,13 +19,13 @@ jobs:
       contents: write
       pull-requests: write
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - uses: pnpm/action-setup@v6
       - name: Use Node.js ${{ env.node-version }}
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: ${{ env.node-version }}
-          cache: "pnpm"
+          # No dependency cache, since this job can publish and push
           registry-url: "https://registry.npmjs.org"
       - name: Install dependencies
         run: pnpm install
@@ -41,7 +41,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Upload swagger to http-apis if released
         if: steps.changesets.outputs.published == 'true'
-        uses: "actions/github-script@v7"
+        uses: actions/github-script@v9
         with:
           script: |
             const script = require('.github/workflows/upload-swagger.js')
