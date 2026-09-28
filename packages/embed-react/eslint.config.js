@@ -1,10 +1,7 @@
-import { fixupConfigRules } from "@eslint/compat";
-import { FlatCompat } from "@eslint/eslintrc";
+import eslintReact from "@eslint-react/eslint-plugin";
 import eslintjs from "@eslint/js";
-import reactPlugin from "eslint-plugin-react";
+import reactHooks from "eslint-plugin-react-hooks";
 import globals from "globals";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
 import tseslint from "typescript-eslint";
 
 /*********************************  Base TS config **************************************/
@@ -35,37 +32,44 @@ const baseConfig = [
 ];
 
 /*********************************  React **************************************/
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-  recommendedConfig: eslintjs.configs.recommended,
-  allConfig: eslintjs.configs.all,
-});
-
-const patchedConfig = fixupConfigRules([
-  ...compat.extends("plugin:react-hooks/recommended"),
-]);
-
 const reactConfig = [
-  { settings: { react: { version: "detect" } } },
   {
-    files: ["**/*.{js,mjs,cjs,jsx,mjsx,ts,tsx,mtsx}"],
-    ...reactPlugin.configs.flat.recommended,
     languageOptions: {
-      ...reactPlugin.configs.flat.recommended.languageOptions,
       globals: {
         ...globals.serviceworker,
         ...globals.browser,
       },
     },
   },
-  ...patchedConfig,
+  {
+    // The type-checked rules need type information, which the JS files don't have
+    files: ["**/*.{ts,tsx}"],
+    ...eslintReact.configs["recommended-type-checked"],
+    settings: {
+      "react-x": {
+        ...eslintReact.configs["recommended-type-checked"].settings?.["react-x"],
+        // The peer range includes React 18, so don't suggest React 19 only APIs
+        version: "18.0.0",
+      },
+    },
+    rules: {
+      ...eslintReact.configs["recommended-type-checked"].rules,
+      // eslint-plugin-react-hooks checks these
+      "@eslint-react/error-boundaries": "off",
+      "@eslint-react/exhaustive-deps": "off",
+      "@eslint-react/purity": "off",
+      "@eslint-react/rules-of-hooks": "off",
+      "@eslint-react/set-state-in-effect": "off",
+      "@eslint-react/set-state-in-render": "off",
+      "@eslint-react/static-components": "off",
+      "@eslint-react/unsupported-syntax": "off",
+      "@eslint-react/use-memo": "off",
+    },
+  },
+  reactHooks.configs.flat.recommended,
   {
     rules: {
       "@typescript-eslint/consistent-type-definitions": ["error", "type"],
-      "react/react-in-jsx-scope": "off",
-      "react/jsx-uses-react": "off",
     },
   },
 ];

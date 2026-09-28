@@ -18,9 +18,9 @@ describe("assertContextExists", () => {
   });
 
   it("throws with displayName when passed a context object", () => {
-    const ctx = React.createContext(undefined);
-    ctx.displayName = "TestContext";
-    expect(() => assertContextExists(null, ctx)).toThrow(
+    const TestContext = React.createContext(undefined);
+    TestContext.displayName = "TestContext";
+    expect(() => assertContextExists(null, TestContext)).toThrow(
       "TestContext not found",
     );
   });
