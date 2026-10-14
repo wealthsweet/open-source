@@ -5,9 +5,9 @@
     "zod": "^4.6.5"
   },
   "devDependencies": {
-    "eslint": "^10.11.0",
-    "prettier": "^3.9.9",
-    "tsdown": "^0.23.0",
+    "eslint": "^10.12.0",
+    "prettier": "^3.9.10",
+    "tsdown": "^0.23.1",
     "typescript": "6.0.3"
   },
   "files": [
