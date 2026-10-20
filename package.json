@@ -3,14 +3,14 @@
   "private": true,
   "devDependencies": {
     "@changesets/cli": "^3.0.3",
-    "prettier": "^3.9.9",
+    "prettier": "^3.9.10",
     "prettier-plugin-organize-imports": "^4.3.0",
     "prettier-plugin-tailwindcss": "^0.8.1",
     "syncpack": "15.3.3",
-    "turbo": "^2.11.4",
-    "turbo-ignore": "^2.11.4",
-    "vite": "^8.3.1",
-    "vitest": "^5.0.2"
+    "turbo": "^2.11.9",
+    "turbo-ignore": "^2.11.9",
+    "vite": "^8.3.4",
+    "vitest": "^5.0.5"
   },
   "packageManager": "pnpm@12.6.0",
   "repository": {
